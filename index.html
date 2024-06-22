@@ -6,6 +6,7 @@
     <title>Music</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="lib/boxicons.min.css" />
+    <script src="lib/jQuery3.js"></script>
   </head>
   <body>
     <div class="container">
@@ -17,36 +18,41 @@
         </div>
         <div class="imagecontainer" id="imagecontainer">
           <div class="imgfondo">
-            <img src="images/img21.jpg" alt="" />
+            <img  id="imageSong" src="images/img21.jpg" alt="" />
           </div>
 
           <div class="imagedetail">
             <div class="detailsong">
-              <h5>No we are free</h5>
-              <h6>Los cadillas</h6>
+              <h5 id="nameSong" >No we are free</h5>
+              <h6 id="author">Los cadillas</h6>
             </div>
-            <div class="meecanta" style="color: red">❤️</div>
+            <div class="meecanta" style="color: rgb(255, 5, 5)">&#10084;</div>
           </div>
+          <!-- <audio id="song">
+            <source src="music/Dragon Ball Z Angeles.mp3" type="audio/mpeg" />
+          </audio> -->
         </div>
-
+        <div class="equalizerview">
+          <canvas id="analyser_render"></canvas>
+        </div>
         <div class="opciones" id="opciones">
           <!-- ICONOS -->
           <span id="time">0:01</span>
           <i class="bx bx-share-alt"></i>
           <i class="bx bx-repeat"> </i>
           <i class="bx bx-shuffle"> </i>
-          <span id="totalTime">2:33</span>
+          <span id="totalTime">0:00</span>
         </div>
 
-        <div class="barraTiempo" id="barratiempo">
+        <div class="barratiempo" id="barratiempo">
           <!-- BARRA -->
-          <div class="barra"></div>
+          <input type="range" value="0" id="progress" />
         </div>
 
         <div class="opcionesPlay" id="opcionesPlay">
           <!-- #iconos -->
           <i class="bx bx-skip-previous prev"></i>
-          <i class="bx bx-play play"></i>
+          <div><i class="bx bx-play" id="play"></i></div>
           <i class="bx bx-skip-next next"></i>
         </div>
       </div>
@@ -60,6 +66,7 @@
       </div>
     </dialog>
 
+    <script src="js/musicPlayer.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
