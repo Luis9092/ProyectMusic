@@ -136,41 +136,7 @@ function handleToggleClick() {
     if (currentValue == 'desactivado') {
         repeat.classList.add("desactivado");
         repeat.classList.remove("apagado", "encendido");
-       
-
     }
-}
-
-musicPlayer.audio.addEventListener("ended", () => {
-    if (currentValue == "desactivado") {
-        musicPlayer.playNextSong();
-        const audioName = musicPlayer.audio.src.split('/').pop();
-        let pathSong = "music/" + audioName;
-        let index = getIndexOfSong(pathSong);
-        const data = buscarPorIndice(songsAlbum1, index);
-        pintarDataSong(data);
-
-    }
-})
-
-
-
-
-
-function repeatAllSongs(songs, index) {
-    let currentIndex = index;
-
-    function playNextSong() {
-        if (currentIndex < songs.length) {
-            musicPlayer.audio.addEventListener('ended', playNextSong);
-            musicPlayer.audio.play();
-            currentIndex++;
-        } else {
-            currentIndex = 0; // Reinicia el índice para repetir el ciclo
-        }
-    }
-
-    playNextSong(); // Inicia la reproducción de las canciones
 }
 
 
@@ -212,6 +178,67 @@ musicPlayer.audio.addEventListener('timeupdate', () => {
 });
 
 
+function playRandomSongs(songs) {
+    // Verificar si se proporcionó un array de canciones
+    let nombre;
+    if (!Array.isArray(songs) || songs.length === 0) {
+        console.error('Debes proporcionar un array de canciones válido.');
+        return;
+    }
+
+    // Función auxiliar para obtener un índice aleatorio
+    function getRandomIndex(array) {
+        return Math.floor(Math.random() * array.length);
+    }
+
+    // Función principal para reproducir canciones aleatoriamente
+    function playNextSong1() {
+        const randomIndex = getRandomIndex(songs);
+        nombre = randomIndex;
+    }
+    playNextSong1();
+    return nombre;
+
+}
+const bxshuffle = document.querySelector(".bx-shuffle");
+
+let isshufle = "off";
+
+bxshuffle.addEventListener("click", () => {
+    bxshuffle.classList.toggle("encendido");
+    if (isshufle == "off") {
+        isshufle = "on";
+    } else {
+        isshufle = "off";
+    }
+    console.log(isshufle);
+});
+
+musicPlayer.audio.addEventListener("ended", () => {
+    if (currentValue == "desactivado" && isshufle == "off") {
+        musicPlayer.playNextSong();
+        const audioName = musicPlayer.audio.src.split('/').pop();
+        let pathSong = "music/" + audioName;
+        let index = getIndexOfSong(pathSong);
+        const data = buscarPorIndice(songsAlbum1, index);
+        pintarDataSong(data);
+    }
+
+    if (currentValue == "desactivado" && isshufle == "on") {
+        let songIndex = playRandomSongs(musicPlayer.audioFiles);
+        musicPlayer.playSong(songIndex);
+        const audioName = musicPlayer.audio.src.split('/').pop();
+        let pathSong = "music/" + audioName;
+        let index = getIndexOfSong(pathSong);
+        const data = buscarPorIndice(songsAlbum1, index);
+        pintarDataSong(data);
+
+    }
+})
+
+
+
+
 musicPlayer.audio.onloadedmetadata = function () {
     progress.max = musicPlayer.audio.duration;
     progress.value = musicPlayer.audio.currentTime;
@@ -245,9 +272,6 @@ progress.onchange = function () {
     // song.play();
     musicPlayer.audio.currentTime = progress.value;
 }
-
-
-
 
 
 let context;
@@ -302,15 +326,43 @@ function DownloadSong() {
     tempLink.href = musicPlayer.audio.src;
     const audioName = musicPlayer.audio.src.split('/').pop();
     tempLink.download = audioName; // Nombre del archivo descargado
-
     // Agregar el enlace al DOM, hacer clic y luego eliminarlo
     document.body.appendChild(tempLink);
     tempLink.click();
     document.body.removeChild(tempLink);
+    return 1;
 }
 
-downloadSong.addEventListener("click", DownloadSong);
+downloadSong.addEventListener("click", () => {
+    let descargar = DownloadSong();
+    if (descargar == 1) {
+        AlertSongDownload();
+    }
+});
 
+function AlertSongDownload() {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        iconColor: "#23ffcc",
+        timer: 1000,
+        timerProgressBar: true,
+        // didOpen: (toast) => {
+        //   toast.addEventListener("mouseenter", Swal.stopTimer);
+        //   toast.addEventListener("mouseleave", Swal.resumeTimer);
+        // },
+    });
+
+    Toast.fire({
+        icon: "success",
+        title:
+            "<h5 style='color:var(--color-text);  font-weight: bold;' > Descarga completada</h5>",
+    }).then(function () {
+
+    });
+
+}
 
 
 
