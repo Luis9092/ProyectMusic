@@ -7,8 +7,9 @@
 :root {
   --color-text: rgb(0, 0, 0);
   --bg-color: #ffffff;
-  --primary-color: #23ffb9;
+  --primary-color: #23ffcc;
   --secondary-color: #ff006f;
+  --gray-color: #c1c1c1;
   --font-lette1: Arial, Helvetica, "Lucida Sans", "Lucida Sans Regular",
     "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   --border-radiusbtn: 10px;
@@ -19,6 +20,16 @@
   color: var(--primary-color);
   font-weight: bold;
 }
+
+.apagado {
+  color: var(--color-text);
+}
+
+.desactivado {
+  color: var(--gray-color);
+  font-weight: 100;
+}
+
 dialog {
   border: none !important;
   outline: none;
@@ -47,6 +58,7 @@ body {
 }
 
 .container {
+  position: relative;
   display: flex;
   justify-content: center;
   height: 100% !important;
@@ -78,11 +90,30 @@ body {
 }
 
 .container .boxcontainer .imagecontainer {
+  position: relative;
   width: 100%;
   height: 60%;
   box-shadow: var(--box-shadowbox);
   border-radius: var(--border-radiusbtn);
   padding: 15px;
+}
+
+.container .boxcontainer .imagecontainer button {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  padding: 6px;
+  border: none;
+  cursor: pointer !important;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.container .boxcontainer .imagecontainer button:hover {
+  background-color: red;
 }
 
 .container .boxcontainer .imgfondo {
@@ -135,6 +166,7 @@ body {
   width: 100%;
   height: 10px;
   background-color: var(--primary-color);
+  box-shadow: var(--box-shadowbox);
   cursor: pointer;
   border-radius: 10px;
 }
@@ -169,9 +201,9 @@ body {
 i {
   cursor: pointer;
 }
-i:hover {
+/* i:hover {
   color: var(--primary-color);
-}
+} */
 
 .container .boxcontainer .opcionesPlay .play {
   width: 10rem;

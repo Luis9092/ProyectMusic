@@ -67,6 +67,10 @@ class MusicPlayer {
         });
         return myArray;
     }
+    // repetirTodo() {
+    //     this.audio.addEventListener('ended',
+    //         this.playNextSong.bind(this));
+    // }
 
 
 }

@@ -19,27 +19,27 @@ let next = document.querySelector(".next");
 let song = document.querySelector("#song");
 
 let songsAlbum1 = [
-{
-    id: 1,
-    name: "Angeles Fuimos", 
-    autor: "Luis Fernando", 
-    path: "music/Dragon Ball Z Angeles.mp3",
-    image: "images/img3.jpg"
-},
-{
-    id: 2,
-    name: "Legends Never Die", 
-    autor: "Celine Dion", 
-    path: "music/legends_never_dieRemix.mp3",
-    image: "images/img21.jpg"
-},
-{
-    id: 3,
-    name: "No We Are Free", 
-    autor: "Serena Belle", 
-    path: "music/noweare.mp3",
-    image: "images/gladiator.jpg"
-}
+    {
+        id: 1,
+        name: "Angeles Fuimos",
+        autor: "Luis Fernando",
+        path: "music/Dragon_Ball_Z_Angeles.mp3",
+        image: "images/img3.jpg"
+    },
+    {
+        id: 2,
+        name: "Legends Never Die",
+        autor: "Celine Dion",
+        path: "music/legends_never_dieRemix.mp3",
+        image: "images/img21.jpg"
+    },
+    {
+        id: 3,
+        name: "No We Are Free",
+        autor: "Serena Belle",
+        path: "music/noweare.mp3",
+        image: "images/gladiator.jpg"
+    }
 
 ]
 
@@ -61,16 +61,16 @@ let isplay = false;
 
 function buscarPorIndice(array, indice) {
     return array.find((_, index) => index === indice);
-  }
+}
 
 const nameSong = document.querySelector("#nameSong");
 const author = document.querySelector("#author");
-const imageSong= document.querySelector("#imageSong");
+const imageSong = document.querySelector("#imageSong");
 
-function pintarDataSong(data){
-nameSong.innerHTML = data.name;
-author.innerHTML = data.autor;
-imageSong.src = data.image;
+function pintarDataSong(data) {
+    nameSong.innerHTML = data.name;
+    author.innerHTML = data.autor;
+    imageSong.src = data.image;
 
 }
 
@@ -90,16 +90,16 @@ play.addEventListener("click", () => {
 
 });
 
-prev.addEventListener("click", () =>{
+prev.addEventListener("click", () => {
     const index = musicPlayer.playPreviousSong();
     const data = buscarPorIndice(songsAlbum1, index);
-            pintarDataSong(data);
+    pintarDataSong(data);
 });
 
-next.addEventListener("click", () =>{
+next.addEventListener("click", () => {
     const index = musicPlayer.playNextSong();
     const data = buscarPorIndice(songsAlbum1, index);
-            pintarDataSong(data);
+    pintarDataSong(data);
 });
 
 const repeat = document.querySelector(".bx-repeat");
@@ -107,29 +107,80 @@ const repeat = document.querySelector(".bx-repeat");
 function toggle(value, ...options) {
     const currentIndex = options.indexOf(value);
     if (currentIndex === -1) {
-      return options[0];
+        return options[0];
     } else if (currentIndex === options.length - 1) {
-      return options[0];
+        return options[0];
     } else {
-      return options[currentIndex + 1];
+        return options[currentIndex + 1];
     }
-  }
+}
 
-  let currentValue = 'off';
+let currentValue = 'desactivado';
 
-  // Función de manejo del clic
-  function handleToggleClick() {
-    currentValue = toggle(currentValue, 'on', 'off');
+// Función de manejo del clic
+function handleToggleClick() {
+    currentValue = toggle(currentValue, 'on', 'off', 'desactivado');
     console.log(currentValue);
-    repeat.classList.toggle("encendido");
 
-    if(currentValue == "off"){
+
+    if (currentValue == "off") {
         musicPlayer.audio.loop = false;
+        repeat.classList.add("apagado");
+        repeat.classList.remove("encendido", "desactivado");
     }
-    if(currentValue == 'on'){
+    if (currentValue == 'on') {
         musicPlayer.audio.loop = true;
+        repeat.classList.add("encendido");
+        repeat.classList.remove("apagado", "desactivado");
+    }
+    if (currentValue == 'desactivado') {
+        repeat.classList.add("desactivado");
+        repeat.classList.remove("apagado", "encendido");
+       
+
+    }
+}
+
+musicPlayer.audio.addEventListener("ended", () => {
+    if (currentValue == "desactivado") {
+        musicPlayer.playNextSong();
+        const audioName = musicPlayer.audio.src.split('/').pop();
+        let pathSong = "music/" + audioName;
+        let index = getIndexOfSong(pathSong);
+        const data = buscarPorIndice(songsAlbum1, index);
+        pintarDataSong(data);
+
+    }
+})
+
+
+
+
+
+function repeatAllSongs(songs, index) {
+    let currentIndex = index;
+
+    function playNextSong() {
+        if (currentIndex < songs.length) {
+            musicPlayer.audio.addEventListener('ended', playNextSong);
+            musicPlayer.audio.play();
+            currentIndex++;
+        } else {
+            currentIndex = 0; // Reinicia el índice para repetir el ciclo
+        }
     }
 
+    playNextSong(); // Inicia la reproducción de las canciones
+}
+
+
+function getIndexOfSong(songTitle) {
+    const index = musicPlayer.audioFiles.indexOf(songTitle);
+    if (index !== -1) {
+        return index;
+    } else {
+        console.log(`La canción "${songTitle}" no se encontró en la lista.`);
+    }
 }
 
 repeat.addEventListener("click", handleToggleClick);
@@ -153,11 +204,11 @@ function playPause() {
 
 
 musicPlayer.audio.addEventListener('timeupdate', () => {
-   let duracion = musicPlayer.audio.currentTime;
-   let entero = convertirDeFloatAEntero(duracion);
-   let tiempo = convertirAminutos(entero);
-   document.querySelector("#time").innerHTML = tiempo;
-   
+    let duracion = musicPlayer.audio.currentTime;
+    let entero = convertirDeFloatAEntero(duracion);
+    let tiempo = convertirAminutos(entero);
+    document.querySelector("#time").innerHTML = tiempo;
+
 });
 
 
@@ -167,7 +218,7 @@ musicPlayer.audio.onloadedmetadata = function () {
     const numeroEntero = convertirDeFloatAEntero(musicPlayer.audio.duration);
     const dur = convertirAminutos(numeroEntero);
     document.querySelector("#totalTime").innerHTML = dur;
-    
+
 
 }
 
@@ -242,6 +293,23 @@ function frameLooper() {
 window.addEventListener("load", initMP3Player, false);
 
 
+// FUNCIONES ADICIONALES -DESCARGAR CANCION
+
+const downloadSong = document.querySelector("#downloadSong");
+
+function DownloadSong() {
+    const tempLink = document.createElement('a');
+    tempLink.href = musicPlayer.audio.src;
+    const audioName = musicPlayer.audio.src.split('/').pop();
+    tempLink.download = audioName; // Nombre del archivo descargado
+
+    // Agregar el enlace al DOM, hacer clic y luego eliminarlo
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    document.body.removeChild(tempLink);
+}
+
+downloadSong.addEventListener("click", DownloadSong);
 
 
 
@@ -251,33 +319,6 @@ window.addEventListener("load", initMP3Player, false);
 
 
 
-
-// PARA PODER REPETIR LA CANCION
-// song.loop = true;
-
-// song.autoplay = false;
-
-
-// let isplay = false;
-
-
-
-
-
-
-
-// window.onload = function (e) {
-// if(isplay == true){
-
-// }
-// }
-
- 
-// var audio = new Audio();
-// audio.src = "music/Dragon Ball Z Angeles.mp3";
-// audio.controls = true;
-// audio.loop = true;
-// audio.autoplay = false;
 
 
 
