@@ -8,6 +8,19 @@
     <link rel="stylesheet" href="lib/boxicons.min.css" />
     <script src="lib/sweetalert2.min.js"></script>
     <script src="lib/jQuery3.js"></script>
+
+    <script>
+      const storageTheme = localStorage.getItem("theme");
+      const systemColorScheme = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches
+        ? "dark"
+        : "light";
+
+      const newTheme = storageTheme ?? systemColorScheme;
+
+      document.documentElement.setAttribute("data-theme", newTheme);
+    </script>
   </head>
   <body>
     <div class="container" id="containerMusic">
@@ -18,11 +31,11 @@
           <i class="bx bx-menu" id="btAlbum"></i>
         </div>
         <div class="imagecontainer" id="imagecontainer">
-          <div class="download">
+          <div class="otherOpciontop">
             <!-- bx-tada -->
-            <button id="downloadSong">
-              <i class="bx bx-download bx-tada"></i>
-            </button>
+            <i id="downloadSong" class="bx bxs-cloud-download"></i>
+            <i class='bx bxs-color' ></i>
+            <i id="theme" class="bx bxs-sun bx-spin activado"></i>
           </div>
           <div class="imgfondo">
             <img id="imageSong" src="images/img21.jpg" alt="" />
@@ -104,7 +117,7 @@
             <div class="timeitem"><span>2.55</span></div>
           </div>
           <div class="opcionesitem">
-            <i class="bx bxs-castle"></i>
+           <i class='bx bx-dots-vertical-rounded'></i>
           </div>
         </div>
         <div class="itemSong">
@@ -117,7 +130,7 @@
             <div class="timeitem"><span>2.55</span></div>
           </div>
           <div class="opcionesitem">
-            <i class="bx bxs-castle"></i>
+           <i class='bx bx-dots-vertical-rounded'></i>
           </div>
         </div>
         <div class="itemSong">
@@ -130,7 +143,7 @@
             <div class="timeitem"><span>2.55</span></div>
           </div>
           <div class="opcionesitem">
-            <i class="bx bxs-castle"></i>
+           <i class='bx bx-dots-vertical-rounded'></i>
           </div>
         </div>
       </div>

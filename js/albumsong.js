@@ -24,6 +24,13 @@ class ALbumSong {
             autor: "Serena Belle",
             path: "music/noweare.mp3",
             image: "images/gladiator.jpg"
+        },
+        {
+            id: 4,
+            name: "Asi Fue Remix",
+            autor: "Marcelo",
+            path: "music/AsiFueRemix.mp3",
+            image: "images/asifue.png"
         }
 
     ]

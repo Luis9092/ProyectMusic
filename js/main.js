@@ -271,6 +271,7 @@ progress.onchange = function () {
 let context;
 window.onload = function () {
     context = new AudioContext();
+
 }
 
 
@@ -372,25 +373,25 @@ volume.addEventListener("click", () => {
 
 volumeSlider.addEventListener('input', () => {
     musicPlayer.audio.volume = volumeSlider.value;
-    if(musicPlayer.audio.volume == 0){
+    if (musicPlayer.audio.volume == 0) {
         ismute = "on";
         volume.classList.add("bx-volume-mute");
         volume.classList.remove("bx-volume-full");
         volume.classList.add("encendido");
-    }else{
+    } else {
         ismute = "off";
         volume.classList.remove("bx-volume-mute");
         volume.classList.add("bx-volume-full");
         volume.classList.remove("encendido");
     }
-  });
+});
 
 
 // DESPLEGAR LISTA DIMANICA
 const despliegue = document.querySelector(".container .ListandoReproduccion");
 const enReproduccion = document.querySelector(".enReproduccion");
 
-enReproduccion.addEventListener("click", () =>{
+enReproduccion.addEventListener("click", () => {
     despliegue.classList.toggle("desplegar");
 })
 
@@ -412,7 +413,52 @@ btAlbum.addEventListener("click", () => {
 backalbum.addEventListener("click", () => {
     containerMusic.style.display = "flex";
     containerAlbum.style.display = "none";
- 
+
 })
 
 
+// THEME DATA
+
+const body = document.querySelector("body");
+const themebtn = document.querySelector("#theme");
+let istheme = "light";
+localStorage.setItem("theme", istheme);
+
+themebtn.addEventListener("click", () => {
+    const root = document.documentElement;
+    
+
+    if (localStorage.getItem("theme") == "light") {
+        istheme = "dark";
+        themebtn.classList.remove("bxs-sun", "activado");
+        themebtn.classList.add("bxs-moon");
+        
+        localStorage.setItem("theme", istheme);
+    } else {
+        istheme = "light";
+        themebtn.classList.add("bxs-sun", "activado");
+        themebtn.classList.remove("bxs-moon");
+        localStorage.setItem("theme", istheme);
+    }
+    root.setAttribute("data-theme", istheme);
+    console.log(istheme);
+})
+
+
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     const swictherTheme = document.querySelector("#theme");
+//     const root = document.documentElement;
+
+//     if (root.getAttribute("data-theme") === "dark") {
+//         swictherTheme.checked = true;
+//     }
+
+//     function toggleTheme() {
+//         const setTheme = this.checked ? "dark" : "light";
+//         root.setAttribute("data-theme", setTheme);
+//         localStorage.setItem("theme", setTheme);
+//     }
+
+//     swictherTheme.addEventListener("click", toggleTheme);
+// });
