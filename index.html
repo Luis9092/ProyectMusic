@@ -10,17 +10,19 @@
     <script src="lib/jQuery3.js"></script>
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="containerMusic">
       <div class="boxcontainer">
         <div class="header" id="titleheader">
-          <i class="bx bx-arrow-back"></i>
+          <i id="backmusic" class="bx bx-arrow-back"></i>
           <h4>Musica Luis</h4>
-          <i class="bx bx-menu" id="btconf"></i>
+          <i class="bx bx-menu" id="btAlbum"></i>
         </div>
         <div class="imagecontainer" id="imagecontainer">
           <div class="download">
             <!-- bx-tada -->
-            <button id="downloadSong"><i class="bx bx-download bx-tada"></i></button>
+            <button id="downloadSong">
+              <i class="bx bx-download bx-tada"></i>
+            </button>
           </div>
           <div class="imgfondo">
             <img id="imageSong" src="images/img21.jpg" alt="" />
@@ -31,27 +33,37 @@
               <h5 id="nameSong">No we are free</h5>
               <h6 id="author">Los cadillas</h6>
             </div>
-            <div class="meecanta" style="color: var(--primary-color);"><i class='bx bxs-heart-circle bx-flashing' ></i></div>
+            <div class="meecanta" style="color: var(--primary-color)">
+              <i class="bx bxs-heart-circle bx-flashing"></i>
+            </div>
           </div>
-          <!-- <audio id="song">
-            <source src="music/Dragon Ball Z Angeles.mp3" type="audio/mpeg" />
-          </audio> -->
         </div>
         <div class="equalizerview">
           <canvas id="analyser_render"></canvas>
         </div>
-        <div class="opciones" id="opciones">
-          <!-- ICONOS -->
-          <span id="time">0:01</span>
-          <i class="bx bx-share-alt"></i>
-          <i class="bx bx-repeat desactivado"> </i>
-          <i class="bx bx-shuffle"> </i>
-          <span id="totalTime">0:00</span>
-        </div>
 
         <div class="barratiempo" id="barratiempo">
           <!-- BARRA -->
-          <input type="range" value="0" id="progress" />
+          <input
+            class="drag__bar"
+            type="range"
+            value="0"
+            id="progress"
+            autocomplete="off"
+          />
+        </div>
+        <div class="opciones" id="opciones">
+          <!-- ICONOS -->
+          <span id="time">0:01</span>
+
+          <i class="bx bx-repeat desactivado"> </i>
+          <i class="bx bx-shuffle apagado"> </i>
+          <span id="totalTime">0:00</span>
+        </div>
+
+        <div class="sonido">
+          <i class="bx bx-volume-full"></i>
+          <input type="range" id="volume-slider" min="0" max="1" step="0.01" />
         </div>
 
         <div class="opcionesPlay" id="opcionesPlay">
@@ -60,17 +72,72 @@
           <div><i class="bx bx-play" id="play"></i></div>
           <i class="bx bx-skip-next next"></i>
         </div>
+        <div class="ListandoReproduccion">
+          <div class="enReproduccion">
+            <i class="bx bx-chevron-up bx-tada"></i>
+          </div>
+          <div class="cuerpoLista">
+            <h6>Lista de enReproduccion</h6>
+            <span>Hola Mundo :3</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <dialog id="modalconf">
-      <header><i class="bx bx-x ico-cerrar"></i></header>
+    <!-- <dialog id="modalconf"> -->
 
-      <div class="container">
-        <h5>hoaMundo</h5>
+    <div class="container" id="containerAlbum">
+      <div class="boxcontainer">
+        <div class="header" id="titleheader">
+          <i id="backalbum" class="bx bx-arrow-back"></i>
+          <h4>Album 001</h4>
+          <i class="bx bx-menu" id="btconf"></i>
+        </div>
+
+        <div class="itemSong">
+          <div class="imagedetailA"><img src="images/img21.jpg" /></div>
+          <div class="detailitem">
+            <div class="detail">
+              <span>Angeles Fuimos Dragon ball</span> <br />
+              <span>Juan Luis Guerra</span>
+            </div>
+            <div class="timeitem"><span>2.55</span></div>
+          </div>
+          <div class="opcionesitem">
+            <i class="bx bxs-castle"></i>
+          </div>
+        </div>
+        <div class="itemSong">
+          <div class="imagedetailA"><img src="images/img3.jpg" /></div>
+          <div class="detailitem">
+            <div class="detail">
+              <span>Angeles Fuimos Dragon ball</span> <br />
+              <span>Juan Luis Guerra</span>
+            </div>
+            <div class="timeitem"><span>2.55</span></div>
+          </div>
+          <div class="opcionesitem">
+            <i class="bx bxs-castle"></i>
+          </div>
+        </div>
+        <div class="itemSong">
+          <div class="imagedetailA"><img src="images/gladiator.jpg" /></div>
+          <div class="detailitem">
+            <div class="detail">
+              <span>Angeles Fuimos Dragon ball</span> <br />
+              <span>Juan Luis Guerra</span>
+            </div>
+            <div class="timeitem"><span>2.55</span></div>
+          </div>
+          <div class="opcionesitem">
+            <i class="bx bxs-castle"></i>
+          </div>
+        </div>
       </div>
-    </dialog>
-
+    </div>
+    <!--       
+    </dialog> -->
+    <script src="js/albumsong.js"></script>
     <script src="js/musicPlayer.js"></script>
     <script src="js/main.js"></script>
   </body>

@@ -1,15 +1,4 @@
-const modalconf = document.querySelector("#modalconf");
-const btconf = document.querySelector("#btconf");
-const icocerrar = document.querySelector(".ico-cerrar");
 
-
-btconf.addEventListener("click", () => {
-    modalconf.showModal();
-});
-
-icocerrar.addEventListener("click", () => {
-    modalconf.close();
-});
 
 let progress = document.querySelector("#progress");
 let prev = document.querySelector(".prev");
@@ -18,46 +7,20 @@ let next = document.querySelector(".next");
 
 let song = document.querySelector("#song");
 
-let songsAlbum1 = [
-    {
-        id: 1,
-        name: "Angeles Fuimos",
-        autor: "Luis Fernando",
-        path: "music/Dragon_Ball_Z_Angeles.mp3",
-        image: "images/img3.jpg"
-    },
-    {
-        id: 2,
-        name: "Legends Never Die",
-        autor: "Celine Dion",
-        path: "music/legends_never_dieRemix.mp3",
-        image: "images/img21.jpg"
-    },
-    {
-        id: 3,
-        name: "No We Are Free",
-        autor: "Serena Belle",
-        path: "music/noweare.mp3",
-        image: "images/gladiator.jpg"
-    }
-
-]
-
+// INICIALIZANDO ALBUM
+const album = new ALbumSong();
 
 // Ejemplo de uso
-const audioFiles = songsAlbum1;
-// audioFiles.forEach(element => {
-//      console.log(element.path);
-// });
+const audioFiles = album.songsAlbum1;
 
 const currentTimeSong = document.querySelector("#time");
 
 // INICIALIZANDO LA CLASE PRINCIPAL
 const musicPlayer = new MusicPlayer(audioFiles, progress, currentTimeSong);
-// musicPlayer.playSong(1);
 
 let playindex = 0;
-let isplay = false;
+let isplay = "off";
+let isshufle = "off";
 
 function buscarPorIndice(array, indice) {
     return array.find((_, index) => index === indice);
@@ -78,28 +41,53 @@ play.addEventListener("click", () => {
     context.resume().then(() => {
         if (musicPlayer.iniciado === 0) {
             musicPlayer.playSong(playindex);
-            const data = buscarPorIndice(songsAlbum1, playindex);
+            const data = buscarPorIndice(album.songsAlbum1, playindex);
             pintarDataSong(data);
+            // isplay = "on";
         }
         if (musicPlayer.iniciado === 1) {
             playPause();
         }
-
     });
-
-
 });
+
+function playPause() {
+    play.classList.toggle("encendido");
+    if (isplay == "off") {
+        isplay = "on";
+        musicPlayer.resume();
+        play.classList.remove("bx-pause");
+        play.classList.add("bx-play");
+    } else {
+        isplay = "off";
+        musicPlayer.pause();
+        play.classList.add("bx-pause");
+        play.classList.remove("bx-play");
+    }
+}
+
 
 prev.addEventListener("click", () => {
     const index = musicPlayer.playPreviousSong();
-    const data = buscarPorIndice(songsAlbum1, index);
+    const data = buscarPorIndice(album.songsAlbum1, index);
     pintarDataSong(data);
+    if (isplay == "on") {
+        musicPlayer.resume();
+    } else {
+        musicPlayer.pause();
+    }
 });
 
 next.addEventListener("click", () => {
     const index = musicPlayer.playNextSong();
-    const data = buscarPorIndice(songsAlbum1, index);
+    const data = buscarPorIndice(album.songsAlbum1, index);
     pintarDataSong(data);
+    if (isplay == "on") {
+        musicPlayer.resume();
+    } else {
+        musicPlayer.pause();
+    }
+
 });
 
 const repeat = document.querySelector(".bx-repeat");
@@ -115,28 +103,34 @@ function toggle(value, ...options) {
     }
 }
 
-let currentValue = 'desactivado';
+let isrepeat = 'desactivado';
 
 // Función de manejo del clic
-function handleToggleClick() {
-    currentValue = toggle(currentValue, 'on', 'off', 'desactivado');
-    console.log(currentValue);
+function RepetirSong() {
+    isrepeat = toggle(isrepeat, 'on', 'off', 'desactivado');
 
 
-    if (currentValue == "off") {
+    if (isrepeat == "off") {
         musicPlayer.audio.loop = false;
         repeat.classList.add("apagado");
         repeat.classList.remove("encendido", "desactivado");
     }
-    if (currentValue == 'on') {
+    if (isrepeat == "on") {
         musicPlayer.audio.loop = true;
         repeat.classList.add("encendido");
         repeat.classList.remove("apagado", "desactivado");
     }
-    if (currentValue == 'desactivado') {
+    if (isrepeat == "desactivado") {
         repeat.classList.add("desactivado");
         repeat.classList.remove("apagado", "encendido");
     }
+
+    if (isshufle == "on") {
+        isshufle = "off";
+        bxshuffle.classList.remove("encendido");
+        bxshuffle.classList.add("apagado");
+    }
+
 }
 
 
@@ -144,29 +138,10 @@ function getIndexOfSong(songTitle) {
     const index = musicPlayer.audioFiles.indexOf(songTitle);
     if (index !== -1) {
         return index;
-    } else {
-        console.log(`La canción "${songTitle}" no se encontró en la lista.`);
     }
 }
 
-repeat.addEventListener("click", handleToggleClick);
-
-
-
-
-
-function playPause() {
-    if (isplay) {
-        musicPlayer.pause();
-        play.classList.add("bx-pause");
-        play.classList.remove("bx-play");
-    } else {
-        musicPlayer.resume();
-        play.classList.remove("bx-pause");
-        play.classList.add("bx-play");
-    }
-    isplay = !isplay;
-}
+repeat.addEventListener("click", RepetirSong);
 
 
 musicPlayer.audio.addEventListener('timeupdate', () => {
@@ -185,13 +160,9 @@ function playRandomSongs(songs) {
         console.error('Debes proporcionar un array de canciones válido.');
         return;
     }
-
-    // Función auxiliar para obtener un índice aleatorio
     function getRandomIndex(array) {
         return Math.floor(Math.random() * array.length);
     }
-
-    // Función principal para reproducir canciones aleatoriamente
     function playNextSong1() {
         const randomIndex = getRandomIndex(songs);
         nombre = randomIndex;
@@ -202,41 +173,70 @@ function playRandomSongs(songs) {
 }
 const bxshuffle = document.querySelector(".bx-shuffle");
 
-let isshufle = "off";
+
+
+
 
 bxshuffle.addEventListener("click", () => {
-    bxshuffle.classList.toggle("encendido");
-    if (isshufle == "off") {
-        isshufle = "on";
-    } else {
-        isshufle = "off";
-    }
-    console.log(isshufle);
+    ShuffleSong();
 });
 
+function ShuffleSong() {
+
+
+    isshufle = toggle(isshufle, 'on', 'off');
+
+    if (isshufle == "off") {
+        bxshuffle.classList.remove("encendido");
+        bxshuffle.classList.add("apagado");
+
+    }
+
+    if (isshufle == "on") {
+        bxshuffle.classList.remove("apagado");
+        bxshuffle.classList.add("encendido");
+    }
+
+    if (isrepeat == "on" || isrepeat == "off") {
+        musicPlayer.audio.loop = false;
+        isrepeat = "desactivado";
+        repeat.classList.add("desactivado");
+        repeat.classList.remove("apagado", "encendido");
+
+    }
+
+}
+
 musicPlayer.audio.addEventListener("ended", () => {
-    if (currentValue == "desactivado" && isshufle == "off") {
+    if (isrepeat == "desactivado" && isshufle == "off") {
         musicPlayer.playNextSong();
         const audioName = musicPlayer.audio.src.split('/').pop();
         let pathSong = "music/" + audioName;
         let index = getIndexOfSong(pathSong);
-        const data = buscarPorIndice(songsAlbum1, index);
+        const data = buscarPorIndice(album.songsAlbum1, index);
         pintarDataSong(data);
+        if (isplay == "on") {
+            musicPlayer.resume();
+        } else {
+            musicPlayer.pause();
+        }
     }
 
-    if (currentValue == "desactivado" && isshufle == "on") {
+    if (isrepeat == "desactivado" && isshufle == "on") {
         let songIndex = playRandomSongs(musicPlayer.audioFiles);
         musicPlayer.playSong(songIndex);
         const audioName = musicPlayer.audio.src.split('/').pop();
         let pathSong = "music/" + audioName;
         let index = getIndexOfSong(pathSong);
-        const data = buscarPorIndice(songsAlbum1, index);
+        const data = buscarPorIndice(album.songsAlbum1, index);
         pintarDataSong(data);
-
+        if (isplay == "on") {
+            musicPlayer.resume();
+        } else {
+            musicPlayer.pause();
+        }
     }
 })
-
-
 
 
 musicPlayer.audio.onloadedmetadata = function () {
@@ -245,8 +245,6 @@ musicPlayer.audio.onloadedmetadata = function () {
     const numeroEntero = convertirDeFloatAEntero(musicPlayer.audio.duration);
     const dur = convertirAminutos(numeroEntero);
     document.querySelector("#totalTime").innerHTML = dur;
-
-
 }
 
 function convertirAminutos(duracion) {
@@ -255,21 +253,17 @@ function convertirAminutos(duracion) {
     const segundos = Math.floor(duracionSegundos % 60);
 
     return `${minutos}:${segundos.toString().padStart(2, '0')}`;
-
 }
 
 
 function convertirDeFloatAEntero(numeroFloat) {
     if (typeof numeroFloat === 'number' && !isNaN(numeroFloat)) {
         return Math.trunc(numeroFloat);
-    } else {
-        return "No se puede convertir a entero";
     }
 }
 
 
 progress.onchange = function () {
-    // song.play();
     musicPlayer.audio.currentTime = progress.value;
 }
 
@@ -277,17 +271,14 @@ progress.onchange = function () {
 let context;
 window.onload = function () {
     context = new AudioContext();
-
 }
 
 
 // AUDIO CANVAS ANIMATION
-
 var canvas, ctx, source, analyser, fbc_array, bars, bar_x, bar_width, bar_height;
 
 function initMP3Player() {
     if (!musicPlayer.audio.src) {
-        // let context = new AudioContext();
         analyser = context.createAnalyser();
         canvas = document.getElementById("analyser_render");
         ctx = canvas.getContext('2d');
@@ -303,7 +294,7 @@ function frameLooper() {
     fbc_array = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(fbc_array);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#23ffb9';
+    ctx.fillStyle = '#ff8d23';
 
     bars = 100;
     for (var i = 0; i < bars; i++) {
@@ -318,7 +309,6 @@ window.addEventListener("load", initMP3Player, false);
 
 
 // FUNCIONES ADICIONALES -DESCARGAR CANCION
-
 const downloadSong = document.querySelector("#downloadSong");
 
 function DownloadSong() {
@@ -326,7 +316,6 @@ function DownloadSong() {
     tempLink.href = musicPlayer.audio.src;
     const audioName = musicPlayer.audio.src.split('/').pop();
     tempLink.download = audioName; // Nombre del archivo descargado
-    // Agregar el enlace al DOM, hacer clic y luego eliminarlo
     document.body.appendChild(tempLink);
     tempLink.click();
     document.body.removeChild(tempLink);
@@ -348,10 +337,6 @@ function AlertSongDownload() {
         iconColor: "#23ffcc",
         timer: 1000,
         timerProgressBar: true,
-        // didOpen: (toast) => {
-        //   toast.addEventListener("mouseenter", Swal.stopTimer);
-        //   toast.addEventListener("mouseleave", Swal.resumeTimer);
-        // },
     });
 
     Toast.fire({
@@ -361,16 +346,73 @@ function AlertSongDownload() {
     }).then(function () {
 
     });
-
 }
 
+const volume = document.querySelector(".bx-volume-full");
+const volumeSlider = document.querySelector("#volume-slider");
+
+
+ismute = "off";
+
+volume.addEventListener("click", () => {
+    volume.classList.toggle("encendido");
+    if (ismute == "off") {
+        ismute = "on";
+        volume.classList.add("bx-volume-mute");
+        volume.classList.remove("bx-volume-full");
+        musicPlayer.audio.volume = 0;
+    } else {
+        ismute = "off";
+        volume.classList.remove("bx-volume-mute");
+        volume.classList.add("bx-volume-full");
+        musicPlayer.audio.volume = 1;
+    }
+});
+
+
+volumeSlider.addEventListener('input', () => {
+    musicPlayer.audio.volume = volumeSlider.value;
+    if(musicPlayer.audio.volume == 0){
+        ismute = "on";
+        volume.classList.add("bx-volume-mute");
+        volume.classList.remove("bx-volume-full");
+        volume.classList.add("encendido");
+    }else{
+        ismute = "off";
+        volume.classList.remove("bx-volume-mute");
+        volume.classList.add("bx-volume-full");
+        volume.classList.remove("encendido");
+    }
+  });
+
+
+// DESPLEGAR LISTA DIMANICA
+const despliegue = document.querySelector(".container .ListandoReproduccion");
+const enReproduccion = document.querySelector(".enReproduccion");
+
+enReproduccion.addEventListener("click", () =>{
+    despliegue.classList.toggle("desplegar");
+})
 
 
 
+// INICIANDO CON EL MODAL DE LOS ALBUMS
+const btAlbum = document.querySelector("#btAlbum");
+const containerMusic = document.querySelector("#containerMusic");
+const containerAlbum = document.querySelector("#containerAlbum");
+const backalbum = document.querySelector("#backalbum");
+// containerMusic.style.display = "none";
+containerAlbum.style.display = "none";
 
+btAlbum.addEventListener("click", () => {
+    containerMusic.style.display = "none";
+    containerAlbum.style.display = "flex";
+});
 
-
-
-
+backalbum.addEventListener("click", () => {
+    containerMusic.style.display = "flex";
+    containerAlbum.style.display = "none";
+ 
+})
 
 

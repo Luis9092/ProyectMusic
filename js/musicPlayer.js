@@ -5,21 +5,15 @@ class MusicPlayer {
         this.currentIndex = 0;
         this.iniciado = 0;
         this.audio = new Audio();
-        // this.index = this.index
         this.audio.autoplay = false;
         this.audio.controls = true;
-        // this.audio.loop = true;
         this.progressElement = progressElement;
         this.currentTimeSong = currentTimeSong;
 
         this.audio.addEventListener('timeupdate', () => {
             this.updateProgress();
         });
-        // this.totalAudiof = this.audio.duration;
-
-        // this.audio.addEventListener('ended',
-        //     this.playNextSong.bind(this)
-        // );
+         
     }
 
     playNextSong() {
@@ -36,8 +30,9 @@ class MusicPlayer {
 
     playSong(index) {
         this.audio.src = this.audioFiles[index];
-        this.audio.play();
+        // this.audio.play();
         this.iniciado = 1;
+
     }
 
     pause() {
@@ -56,7 +51,6 @@ class MusicPlayer {
     updateProgress() {
         const currentTime = this.audio.currentTime;
         const totalDuration = this.audio.duration;
-        // this.currentTimeSong.innerHTML= currentTime;
         this.progressElement.value = currentTime;
     }
 
@@ -67,10 +61,4 @@ class MusicPlayer {
         });
         return myArray;
     }
-    // repetirTodo() {
-    //     this.audio.addEventListener('ended',
-    //         this.playNextSong.bind(this));
-    // }
-
-
 }
