@@ -6,17 +6,143 @@ let play = document.querySelector(".bx-play");
 let next = document.querySelector(".next");
 
 let song = document.querySelector("#song");
+// INICIANDO CON EL MODAL DE LOS ALBUMS
+const btAlbum = document.querySelector("#btAlbum");
+const containerMusic = document.querySelector("#containerMusic");
+const containerAlbum = document.querySelector("#containerAlbum");
+const backalbum = document.querySelector("#backalbum");
+const containerSongs = document.querySelector("#containerSongs");
+const backsongs = document.querySelector("#backsongs");
+
+containerSongs.style.display = "none";
+containerMusic.style.display = "flex";
+containerAlbum.style.display = "none";
+
+btAlbum.addEventListener("click", () => {
+    containerMusic.style.display = "none";
+    containerAlbum.style.display = "flex";
+});
+
+backalbum.addEventListener("click", () => {
+    containerMusic.style.display = "flex";
+    containerAlbum.style.display = "none";
+});
+
+function BackSongs() {
+    containerSongs.style.display = "none";
+    containerAlbum.style.display = "flex";
+
+}
+
 
 // INICIALIZANDO ALBUM
 const album = new ALbumSong();
-
-// Ejemplo de uso
-const audioFiles = album.songsAlbum1;
+let itemsAlbum = document.querySelectorAll("#containerAlbum .itemSong");
+let albmunActive = album.eletronic;
 
 const currentTimeSong = document.querySelector("#time");
 
 // INICIALIZANDO LA CLASE PRINCIPAL
-const musicPlayer = new MusicPlayer(audioFiles, progress, currentTimeSong);
+let musicPlayer = new MusicPlayer();
+musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
+
+for (btn of itemsAlbum) {
+    btn.addEventListener("click", function (e) {
+        let valor = this.id;
+        uno = valor;
+        let nombre = "", AlbumLista = "";
+
+        containerAlbum.style.display = "none";
+        containerSongs.style.display = "flex";
+
+        if (uno == "electronic") {
+            AlbumLista = album.eletronic;
+            nombre = "Electronic Music";
+        }
+
+        if (uno == "noventas") {
+            AlbumLista = album.noventas;
+            nombre = "90s Music";
+        }
+
+        CrearListado(AlbumLista, nombre, uno);
+    });
+
+}
+
+
+
+function CrearListado(nombreAlbum, nombre, clasificacion) {
+
+    cadena = ` <div class="header" id="titleheader">
+          <i id="backsongs" onclick = "BackSongs()" class="bx bx-arrow-back"></i>
+          <h4>${nombre}</h4>
+          <i class="bx bx-menu" id="btconf"></i>
+        </div>`;
+
+    nombreAlbum.forEach(element => {
+        
+
+        cadena += `     
+        <div class="itemSong" id="${element.id}" name ="${clasificacion}" >
+          <div class="imagedetailA"><img src="${element.image}" /></div>
+          <div class="detailitem">
+            <div class="detail">
+              <span>${element.name}</span> <br />
+              <span>${element.autor}</span>
+            </div>
+            <div class="timeitem"><span></span></div>
+          </div>
+          <div class="opcionesitem">
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </div>
+        </div>
+        `;
+    });
+
+    document.querySelector("#containerSongs .boxcontainer").innerHTML = cadena;
+    ObtenerSongItem();
+}
+
+function ObtenerSongItem() {
+    let itemsSong = document.querySelectorAll("#containerSongs .itemSong");
+    for (iterator of itemsSong) {
+        iterator.addEventListener("click", function () {
+            let id = this.id - 1;
+            let name = this.getAttribute("name");
+
+            if (name == "electronic") {
+                albmunActive = album.eletronic;
+
+            }
+
+            if (name == "noventas") {
+                albmunActive = album.noventas;
+
+            }
+            musicPlayer.destroy();
+            musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
+            musicPlayer.playSong(Number(id));
+
+            let datos = buscarPorIndice(albmunActive, Number(id));
+
+            pintarDataSong(datos);
+            containerAlbum.style.display = "none";
+            containerSongs.style.display = "none";
+            containerMusic.style.display = "flex";
+            // initMP3Player();
+
+        });
+    }
+    
+}
+
+
+
+
+
+// Ejemplo de uso
+
 
 let playindex = 0;
 let isplay = "off";
@@ -34,42 +160,48 @@ function pintarDataSong(data) {
     nameSong.innerHTML = data.name;
     author.innerHTML = data.autor;
     imageSong.src = data.image;
-
+    initMP3Player();
 }
+
+
 
 play.addEventListener("click", () => {
     context.resume().then(() => {
         if (musicPlayer.iniciado === 0) {
             musicPlayer.playSong(playindex);
-            const data = buscarPorIndice(album.songsAlbum1, playindex);
+            let data = buscarPorIndice(albmunActive, playindex);
             pintarDataSong(data);
             // isplay = "on";
         }
         if (musicPlayer.iniciado === 1) {
             playPause();
+           
         }
     });
 });
 
 function playPause() {
-    play.classList.toggle("encendido");
     if (isplay == "off") {
         isplay = "on";
         musicPlayer.resume();
         play.classList.remove("bx-pause");
         play.classList.add("bx-play");
+        play.classList.add("encendido");
+
     } else {
         isplay = "off";
         musicPlayer.pause();
         play.classList.add("bx-pause");
         play.classList.remove("bx-play");
+        play.classList.remove("encendido");
+
     }
 }
 
 
 prev.addEventListener("click", () => {
     const index = musicPlayer.playPreviousSong();
-    const data = buscarPorIndice(album.songsAlbum1, index);
+    const data = buscarPorIndice(albmunActive, index);
     pintarDataSong(data);
     if (isplay == "on") {
         musicPlayer.resume();
@@ -80,7 +212,7 @@ prev.addEventListener("click", () => {
 
 next.addEventListener("click", () => {
     const index = musicPlayer.playNextSong();
-    const data = buscarPorIndice(album.songsAlbum1, index);
+    const data = buscarPorIndice(albmunActive, index);
     pintarDataSong(data);
     if (isplay == "on") {
         musicPlayer.resume();
@@ -175,8 +307,6 @@ const bxshuffle = document.querySelector(".bx-shuffle");
 
 
 
-
-
 bxshuffle.addEventListener("click", () => {
     ShuffleSong();
 });
@@ -213,7 +343,7 @@ musicPlayer.audio.addEventListener("ended", () => {
         const audioName = musicPlayer.audio.src.split('/').pop();
         let pathSong = "music/" + audioName;
         let index = getIndexOfSong(pathSong);
-        const data = buscarPorIndice(album.songsAlbum1, index);
+        const data = buscarPorIndice(albmunActive, index);
         pintarDataSong(data);
         if (isplay == "on") {
             musicPlayer.resume();
@@ -228,7 +358,7 @@ musicPlayer.audio.addEventListener("ended", () => {
         const audioName = musicPlayer.audio.src.split('/').pop();
         let pathSong = "music/" + audioName;
         let index = getIndexOfSong(pathSong);
-        const data = buscarPorIndice(album.songsAlbum1, index);
+        const data = buscarPorIndice(albmunActive, index);
         pintarDataSong(data);
         if (isplay == "on") {
             musicPlayer.resume();
@@ -271,15 +401,19 @@ progress.onchange = function () {
 let context;
 window.onload = function () {
     context = new AudioContext();
+    SetTheme();
+    // initMP3Player();
+    
 
 }
 
+let colors = "#23ffed";
 
 // AUDIO CANVAS ANIMATION
 var canvas, ctx, source, analyser, fbc_array, bars, bar_x, bar_width, bar_height;
 
 function initMP3Player() {
-    if (!musicPlayer.audio.src) {
+    
         analyser = context.createAnalyser();
         canvas = document.getElementById("analyser_render");
         ctx = canvas.getContext('2d');
@@ -287,7 +421,7 @@ function initMP3Player() {
         source.connect(analyser);
         analyser.connect(context.destination);
         frameLooper();
-    }
+     
 }
 
 function frameLooper() {
@@ -295,7 +429,7 @@ function frameLooper() {
     fbc_array = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(fbc_array);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#ff8d23';
+    ctx.fillStyle = colors;
 
     bars = 100;
     for (var i = 0; i < bars; i++) {
@@ -306,7 +440,7 @@ function frameLooper() {
 
     }
 }
-window.addEventListener("load", initMP3Player, false);
+// window.addEventListener("load", initMP3Player, false);
 
 
 // FUNCIONES ADICIONALES -DESCARGAR CANCION
@@ -397,42 +531,36 @@ enReproduccion.addEventListener("click", () => {
 
 
 
-// INICIANDO CON EL MODAL DE LOS ALBUMS
-const btAlbum = document.querySelector("#btAlbum");
-const containerMusic = document.querySelector("#containerMusic");
-const containerAlbum = document.querySelector("#containerAlbum");
-const backalbum = document.querySelector("#backalbum");
-// containerMusic.style.display = "none";
-containerAlbum.style.display = "none";
 
-btAlbum.addEventListener("click", () => {
-    containerMusic.style.display = "none";
-    containerAlbum.style.display = "flex";
-});
 
-backalbum.addEventListener("click", () => {
-    containerMusic.style.display = "flex";
-    containerAlbum.style.display = "none";
 
-})
+
+
+
+
+
 
 
 // THEME DATA
-
 const body = document.querySelector("body");
 const themebtn = document.querySelector("#theme");
 let istheme = "light";
 localStorage.setItem("theme", istheme);
 
 themebtn.addEventListener("click", () => {
+    SetTheme();
+});
+
+
+function SetTheme() {
     const root = document.documentElement;
-    
+
 
     if (localStorage.getItem("theme") == "light") {
         istheme = "dark";
         themebtn.classList.remove("bxs-sun", "activado");
         themebtn.classList.add("bxs-moon");
-        
+
         localStorage.setItem("theme", istheme);
     } else {
         istheme = "light";
@@ -441,24 +569,49 @@ themebtn.addEventListener("click", () => {
         localStorage.setItem("theme", istheme);
     }
     root.setAttribute("data-theme", istheme);
-    console.log(istheme);
+}
+
+let cambiarColor = document.querySelector(".bxs-color");
+
+
+$(".bxs-color").spectrum({
+    color: "#f00",
+    showPalette: false,
+    showAlpha: true,
+    showButtons: false,
+     
 })
 
+var styleElement = document.createElement("style");
+styleElement.rel = "stylesheet";
+styleElement.href = "css/elementos.css";
+document.head.appendChild(styleElement);
+
+$(".bxs-color").on("dragstop.spectrum", function (e, color) {
+
+    styleElement.textContent = `
+    input[type="range"]::-webkit-slider-thumb {
+     height: 0.6rem;
+     width: 0.6rem;
+     -webkit-appearance: none;
+     cursor: pointer;
+     box-shadow: -100em 0 0 100em ${color.toHexString()};
+     -webkit-appearance: none;
+     border: 3px solid white;
+     border-radius: 50%;
+     background: ${color.toHexString()};
+   }
+    .encendido{
+    color: ${color.toHexString()} !important;
+    }
+   `;
+    colors = color.toHexString();
+
+    //    $("#meecanta").css("color", color.toHexString());
+    //    ctx.fillStyle = 
+});
 
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     const swictherTheme = document.querySelector("#theme");
-//     const root = document.documentElement;
 
-//     if (root.getAttribute("data-theme") === "dark") {
-//         swictherTheme.checked = true;
-//     }
+// Establecer el contenido CSS
 
-//     function toggleTheme() {
-//         const setTheme = this.checked ? "dark" : "light";
-//         root.setAttribute("data-theme", setTheme);
-//         localStorage.setItem("theme", setTheme);
-//     }
-
-//     swictherTheme.addEventListener("click", toggleTheme);
-// });

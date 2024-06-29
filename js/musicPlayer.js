@@ -1,5 +1,9 @@
 class MusicPlayer {
-    constructor(audio, progressElement, currentTimeSong) {
+    constructor() {
+
+    }
+
+    inicializarTodo(audio, progressElement, currentTimeSong) {
         this.audio = audio;
         this.audioFiles = this.extraerAudio();
         this.currentIndex = 0;
@@ -13,8 +17,9 @@ class MusicPlayer {
         this.audio.addEventListener('timeupdate', () => {
             this.updateProgress();
         });
-         
     }
+
+
 
     playNextSong() {
         this.currentIndex = (this.currentIndex + 1) % this.audioFiles.length;
@@ -30,7 +35,7 @@ class MusicPlayer {
 
     playSong(index) {
         this.audio.src = this.audioFiles[index];
-        // this.audio.play();
+        this.audio.play();
         this.iniciado = 1;
 
     }
@@ -59,6 +64,21 @@ class MusicPlayer {
         this.audio.forEach(element => {
             myArray.push(element.path);
         });
+        
         return myArray;
     }
+
+    destroy() {
+        // Liberar recursos y remover eventos
+        this.audio.removeEventListener('timeupdate', this.updateProgress);
+        this.audio.pause();
+        this.audio = null;
+        this.progressElement = null;
+        this.currentTimeSong = null;
+        this.audioFiles = null;
+
+    }
+
+
+
 }

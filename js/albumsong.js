@@ -2,36 +2,53 @@ class ALbumSong {
 
     constructor() { }
 
-
-    songsAlbum1 = [
+    // ELECTRONIC MUSIC 
+    eletronic = [
         {
             id: 1,
-            name: "Angeles Fuimos",
-            autor: "Luis Fernando",
-            path: "music/Dragon_Ball_Z_Angeles.mp3",
+            name: "Hero",
+            autor: "Alan Walker",
+            path: "music/Hero.mp3",
             image: "images/img3.jpg"
         },
         {
             id: 2,
-            name: "Legends Never Die",
-            autor: "Celine Dion",
-            path: "music/legends_never_dieRemix.mp3",
+            name: "Play",
+            autor: "Alan Walker",
+            path: "music/play.mp3",
             image: "images/img21.jpg"
         },
         {
             id: 3,
-            name: "No We Are Free",
-            autor: "Serena Belle",
-            path: "music/noweare.mp3",
+            name: "Demons x Jar Of Heart",
+            autor: "Mashup Slow",
+            path: "music/demons_jar.mp3",
             image: "images/gladiator.jpg"
         },
+    ]
+
+    noventas = [
         {
-            id: 4,
-            name: "Asi Fue Remix",
-            autor: "Marcelo",
-            path: "music/AsiFueRemix.mp3",
-            image: "images/asifue.png"
-        }
+            id: 1,
+            name: "Gloria",
+            autor: "Laura Branigan",
+            path: "music/Gloria.mp3",
+            image: "images/img3.jpg"
+        },
+        {
+            id: 2,
+            name: "You're My Heart",
+            autor: "Modern Talking",
+            path: "music/youremiheart.mp3",
+            image: "images/img21.jpg"
+        },
+        {
+            id: 3,
+            name: "Your Love",
+            autor: "The Outfield",
+            path: "music/yourlove.mp3",
+            image: "images/gladiator.jpg"
+        },
 
     ]
 
