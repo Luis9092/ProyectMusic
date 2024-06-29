@@ -35,16 +35,41 @@ function BackSongs() {
 }
 
 
+let playindex = 0;
+let isplay = "off";
+let isshufle = "off";
+
+
 // INICIALIZANDO ALBUM
 const album = new ALbumSong();
 let itemsAlbum = document.querySelectorAll("#containerAlbum .itemSong");
 let albmunActive = album.eletronic;
+
 
 const currentTimeSong = document.querySelector("#time");
 
 // INICIALIZANDO LA CLASE PRINCIPAL
 let musicPlayer = new MusicPlayer();
 musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
+// musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
+
+
+
+
+window.onload = function (e) {
+    context3 = new AudioContext();
+    musicPlayer.playSong(playindex);
+    let data = buscarPorIndice(albmunActive, playindex);
+    pintarDataSong(data);
+    actualizarTiempoDeLaCancion(musicPlayer);
+    ActualizarTiem002(musicPlayer);
+
+
+}
+
+
+
+
 
 for (btn of itemsAlbum) {
     btn.addEventListener("click", function (e) {
@@ -59,7 +84,6 @@ for (btn of itemsAlbum) {
             AlbumLista = album.eletronic;
             nombre = "Electronic Music";
         }
-
         if (uno == "noventas") {
             AlbumLista = album.noventas;
             nombre = "90s Music";
@@ -81,7 +105,7 @@ function CrearListado(nombreAlbum, nombre, clasificacion) {
         </div>`;
 
     nombreAlbum.forEach(element => {
-        
+
 
         cadena += `     
         <div class="itemSong" id="${element.id}" name ="${clasificacion}" >
@@ -113,7 +137,6 @@ function ObtenerSongItem() {
 
             if (name == "electronic") {
                 albmunActive = album.eletronic;
-
             }
 
             if (name == "noventas") {
@@ -123,18 +146,30 @@ function ObtenerSongItem() {
             musicPlayer.destroy();
             musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
             musicPlayer.playSong(Number(id));
-
             let datos = buscarPorIndice(albmunActive, Number(id));
-
             pintarDataSong(datos);
+            actualizarTiempoDeLaCancion(musicPlayer);
+            ActualizarTiem002(musicPlayer);
+            initMP3Player2(musicPlayer);
+
+
+            if (isplay == "on") {
+                musicPlayer.resume();
+            } else {
+                musicPlayer.pause();
+            }
+
+            // musicPlayer.playSong(Number(id));
+
             containerAlbum.style.display = "none";
             containerSongs.style.display = "none";
             containerMusic.style.display = "flex";
-            // initMP3Player();
+
+
 
         });
     }
-    
+
 }
 
 
@@ -143,10 +178,6 @@ function ObtenerSongItem() {
 
 // Ejemplo de uso
 
-
-let playindex = 0;
-let isplay = "off";
-let isshufle = "off";
 
 function buscarPorIndice(array, indice) {
     return array.find((_, index) => index === indice);
@@ -160,27 +191,20 @@ function pintarDataSong(data) {
     nameSong.innerHTML = data.name;
     author.innerHTML = data.autor;
     imageSong.src = data.image;
-    initMP3Player();
+
 }
 
 
 
 play.addEventListener("click", () => {
-    context.resume().then(() => {
-        if (musicPlayer.iniciado === 0) {
-            musicPlayer.playSong(playindex);
-            let data = buscarPorIndice(albmunActive, playindex);
-            pintarDataSong(data);
-            // isplay = "on";
-        }
-        if (musicPlayer.iniciado === 1) {
-            playPause();
-           
-        }
-    });
+
+    playPause(playindex, albmunActive);
+
 });
 
-function playPause() {
+function playPause(playindex, albumActive) {
+    // context.resume().then(() => {
+
     if (isplay == "off") {
         isplay = "on";
         musicPlayer.resume();
@@ -196,7 +220,22 @@ function playPause() {
         play.classList.remove("encendido");
 
     }
+    // initMP3Player(musicPlayer);
+    // });
 }
+function actualizarTiempoDeLaCancion(musicPlayer) {
+
+    musicPlayer.audio.addEventListener('timeupdate', (e) => {
+        let duracion = musicPlayer.audio.currentTime;
+        let entero = convertirDeFloatAEntero(duracion);
+        let tiempo = convertirAminutos(entero);
+        document.querySelector("#time").innerHTML = tiempo;
+
+    });
+
+}
+
+
 
 
 prev.addEventListener("click", () => {
@@ -210,7 +249,9 @@ prev.addEventListener("click", () => {
     }
 });
 
-next.addEventListener("click", () => {
+next.addEventListener("click", (e) => {
+    e.preventDefault();
+
     const index = musicPlayer.playNextSong();
     const data = buscarPorIndice(albmunActive, index);
     pintarDataSong(data);
@@ -219,6 +260,8 @@ next.addEventListener("click", () => {
     } else {
         musicPlayer.pause();
     }
+
+
 
 });
 
@@ -276,13 +319,6 @@ function getIndexOfSong(songTitle) {
 repeat.addEventListener("click", RepetirSong);
 
 
-musicPlayer.audio.addEventListener('timeupdate', () => {
-    let duracion = musicPlayer.audio.currentTime;
-    let entero = convertirDeFloatAEntero(duracion);
-    let tiempo = convertirAminutos(entero);
-    document.querySelector("#time").innerHTML = tiempo;
-
-});
 
 
 function playRandomSongs(songs) {
@@ -369,13 +405,17 @@ musicPlayer.audio.addEventListener("ended", () => {
 })
 
 
-musicPlayer.audio.onloadedmetadata = function () {
-    progress.max = musicPlayer.audio.duration;
-    progress.value = musicPlayer.audio.currentTime;
-    const numeroEntero = convertirDeFloatAEntero(musicPlayer.audio.duration);
-    const dur = convertirAminutos(numeroEntero);
-    document.querySelector("#totalTime").innerHTML = dur;
+function ActualizarTiem002(musicPlayer) {
+    musicPlayer.audio.onloadedmetadata = function () {
+        progress.max = musicPlayer.audio.duration;
+        progress.value = musicPlayer.audio.currentTime;
+        const numeroEntero = convertirDeFloatAEntero(musicPlayer.audio.duration);
+        const dur = convertirAminutos(numeroEntero);
+        document.querySelector("#totalTime").innerHTML = dur;
+    }
+
 }
+
 
 function convertirAminutos(duracion) {
     const duracionSegundos = duracion;
@@ -398,31 +438,37 @@ progress.onchange = function () {
 }
 
 
-let context;
-window.onload = function () {
-    context = new AudioContext();
-    SetTheme();
-    // initMP3Player();
-    
 
-}
 
 let colors = "#23ffed";
 
 // AUDIO CANVAS ANIMATION
+
+
 var canvas, ctx, source, analyser, fbc_array, bars, bar_x, bar_width, bar_height;
 
-function initMP3Player() {
-    
-        analyser = context.createAnalyser();
+function initMP3Player2(musicPlayer) {
+    context3 = null;
+
+
+    context3 = new AudioContext();
+
+    context3.resume().then(() => {
+
+        analyser = context3.createAnalyser();
         canvas = document.getElementById("analyser_render");
         ctx = canvas.getContext('2d');
-        source = context.createMediaElementSource(musicPlayer.audio);
+        source = context3.createMediaElementSource(musicPlayer.audio);
         source.connect(analyser);
-        analyser.connect(context.destination);
+        analyser.connect(context3.destination);
         frameLooper();
-     
+
+    });
+
+
 }
+
+
 
 function frameLooper() {
     window.requestAnimationFrame(frameLooper);
@@ -440,6 +486,7 @@ function frameLooper() {
 
     }
 }
+
 // window.addEventListener("load", initMP3Player, false);
 
 
@@ -579,7 +626,7 @@ $(".bxs-color").spectrum({
     showPalette: false,
     showAlpha: true,
     showButtons: false,
-     
+
 })
 
 var styleElement = document.createElement("style");
@@ -614,4 +661,3 @@ $(".bxs-color").on("dragstop.spectrum", function (e, color) {
 
 
 // Establecer el contenido CSS
-

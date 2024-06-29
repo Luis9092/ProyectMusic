@@ -13,15 +13,17 @@ class MusicPlayer {
         this.audio.controls = true;
         this.progressElement = progressElement;
         this.currentTimeSong = currentTimeSong;
+        // this.audio.duration = audio.duration;
 
         this.audio.addEventListener('timeupdate', () => {
             this.updateProgress();
         });
+
     }
 
 
-
     playNextSong() {
+        this.stop();
         this.currentIndex = (this.currentIndex + 1) % this.audioFiles.length;
         this.playSong(this.currentIndex);
         return this.currentIndex;
@@ -35,9 +37,9 @@ class MusicPlayer {
 
     playSong(index) {
         this.audio.src = this.audioFiles[index];
-        this.audio.play();
+        // this.audio.play();
         this.iniciado = 1;
-
+     
     }
 
     pause() {
@@ -64,7 +66,7 @@ class MusicPlayer {
         this.audio.forEach(element => {
             myArray.push(element.path);
         });
-        
+
         return myArray;
     }
 
@@ -77,6 +79,21 @@ class MusicPlayer {
         this.currentTimeSong = null;
         this.audioFiles = null;
 
+    }
+
+    convertirAminutos(duracion) {
+        const duracionSegundos = duracion;
+        const minutos = Math.floor(duracionSegundos / 60);
+        const segundos = Math.floor(duracionSegundos % 60);
+
+        return `${minutos}:${segundos.toString().padStart(2, '0')}`;
+    }
+
+
+    convertirDeFloatAEntero(numeroFloat) {
+        if (typeof numeroFloat === 'number' && !isNaN(numeroFloat)) {
+            return Math.trunc(numeroFloat);
+        }
     }
 
 
