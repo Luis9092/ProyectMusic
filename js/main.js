@@ -1,5 +1,4 @@
 
-
 let progress = document.querySelector("#progress");
 let prev = document.querySelector(".prev");
 let play = document.querySelector(".bx-play");
@@ -14,8 +13,10 @@ const backalbum = document.querySelector("#backalbum");
 const containerSongs = document.querySelector("#containerSongs");
 const backsongs = document.querySelector("#backsongs");
 
+const containerInicio = document.querySelector("#containerInicio");
+
 containerSongs.style.display = "none";
-containerMusic.style.display = "flex";
+containerMusic.style.display = "none";
 containerAlbum.style.display = "none";
 
 btAlbum.addEventListener("click", () => {
@@ -42,7 +43,7 @@ let isshufle = "off";
 
 // INICIALIZANDO ALBUM
 const album = new ALbumSong();
-let itemsAlbum = document.querySelectorAll("#containerAlbum .itemSong");
+let itemsAlbum = document.querySelectorAll("#containerAlbum .itemAlbum");
 let albmunActive = album.eletronic;
 
 
@@ -51,24 +52,19 @@ const currentTimeSong = document.querySelector("#time");
 // INICIALIZANDO LA CLASE PRINCIPAL
 let musicPlayer = new MusicPlayer();
 musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
-// musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
-
 
 
 
 window.onload = function (e) {
     context3 = new AudioContext();
-    musicPlayer.playSong(playindex);
-    let data = buscarPorIndice(albmunActive, playindex);
-    pintarDataSong(data);
-    actualizarTiempoDeLaCancion(musicPlayer);
-    ActualizarTiem002(musicPlayer);
-
+    SetTheme();
 
 }
 
-
-
+document.querySelector("#meecanta").addEventListener("click", () => {
+    initMusic(albmunActive, 2);
+    CrearListado(albmunActive, "Electronic", "Electronic");
+});
 
 
 for (btn of itemsAlbum) {
@@ -88,26 +84,31 @@ for (btn of itemsAlbum) {
             AlbumLista = album.noventas;
             nombre = "90s Music";
         }
+        if (uno == "Cristianas") {
+            AlbumLista = album.Cristianas;
+            nombre = "Musica Cristiana";
+        }
 
         CrearListado(AlbumLista, nombre, uno);
     });
-
 }
 
 
 
 function CrearListado(nombreAlbum, nombre, clasificacion) {
+    cadena02 = ` <div class="headlista">
+              <h4>${nombre}</h4>
+              <span>En Reproduccion</span>
+            </div>`;
 
     cadena = ` <div class="header" id="titleheader">
           <i id="backsongs" onclick = "BackSongs()" class="bx bx-arrow-back"></i>
           <h4>${nombre}</h4>
           <i class="bx bx-menu" id="btconf"></i>
         </div>`;
-
+    let cuerpo = "";
     nombreAlbum.forEach(element => {
-
-
-        cadena += `     
+        cuerpo += `     
         <div class="itemSong" id="${element.id}" name ="${clasificacion}" >
           <div class="imagedetailA"><img src="${element.image}" /></div>
           <div class="detailitem">
@@ -122,57 +123,61 @@ function CrearListado(nombreAlbum, nombre, clasificacion) {
           </div>
         </div>
         `;
+
     });
+    cadena += cuerpo;
+    cadena02 += cuerpo;
 
     document.querySelector("#containerSongs .boxcontainer").innerHTML = cadena;
+    document.querySelector(".cuerpoLista").innerHTML = cadena02;
     ObtenerSongItem();
 }
 
 function ObtenerSongItem() {
     let itemsSong = document.querySelectorAll("#containerSongs .itemSong");
     for (iterator of itemsSong) {
-        iterator.addEventListener("click", function () {
+        iterator.addEventListener("click", function (e) {
             let id = this.id - 1;
             let name = this.getAttribute("name");
 
             if (name == "electronic") {
                 albmunActive = album.eletronic;
             }
-
             if (name == "noventas") {
                 albmunActive = album.noventas;
-
-            }
-            musicPlayer.destroy();
-            musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
-            musicPlayer.playSong(Number(id));
-            let datos = buscarPorIndice(albmunActive, Number(id));
-            pintarDataSong(datos);
-            actualizarTiempoDeLaCancion(musicPlayer);
-            ActualizarTiem002(musicPlayer);
-            initMP3Player2(musicPlayer);
-
-
-            if (isplay == "on") {
-                musicPlayer.resume();
-            } else {
-                musicPlayer.pause();
             }
 
-            // musicPlayer.playSong(Number(id));
+            if (name == "Cristianas") {
+                albmunActive = album.Cristianas;
+            }
 
-            containerAlbum.style.display = "none";
-            containerSongs.style.display = "none";
-            containerMusic.style.display = "flex";
-
-
-
+            initMusic(albmunActive, id);
         });
     }
-
 }
 
 
+function initMusic(albmunActive, id) {
+    musicPlayer.destroy();
+    musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
+    musicPlayer.playSong(Number(id));
+    let datos = buscarPorIndice(albmunActive, Number(id));
+    pintarDataSong(datos);
+    actualizarTiempoDeLaCancion(musicPlayer);
+    ActualizarTiem002(musicPlayer);
+    initMP3PlayerCanva(musicPlayer);
+    Repetir();
+
+    if (isplay == "on") {
+        musicPlayer.resume();
+    } else {
+        musicPlayer.pause();
+    }
+
+    containerAlbum.style.display = "none";
+    containerSongs.style.display = "none";
+    containerMusic.style.display = "flex";
+}
 
 
 
@@ -191,7 +196,6 @@ function pintarDataSong(data) {
     nameSong.innerHTML = data.name;
     author.innerHTML = data.autor;
     imageSong.src = data.image;
-
 }
 
 
@@ -203,7 +207,6 @@ play.addEventListener("click", () => {
 });
 
 function playPause(playindex, albumActive) {
-    // context.resume().then(() => {
 
     if (isplay == "off") {
         isplay = "on";
@@ -218,10 +221,7 @@ function playPause(playindex, albumActive) {
         play.classList.add("bx-pause");
         play.classList.remove("bx-play");
         play.classList.remove("encendido");
-
     }
-    // initMP3Player(musicPlayer);
-    // });
 }
 function actualizarTiempoDeLaCancion(musicPlayer) {
 
@@ -230,9 +230,7 @@ function actualizarTiempoDeLaCancion(musicPlayer) {
         let entero = convertirDeFloatAEntero(duracion);
         let tiempo = convertirAminutos(entero);
         document.querySelector("#time").innerHTML = tiempo;
-
     });
-
 }
 
 
@@ -260,9 +258,6 @@ next.addEventListener("click", (e) => {
     } else {
         musicPlayer.pause();
     }
-
-
-
 });
 
 const repeat = document.querySelector(".bx-repeat");
@@ -283,7 +278,6 @@ let isrepeat = 'desactivado';
 // Función de manejo del clic
 function RepetirSong() {
     isrepeat = toggle(isrepeat, 'on', 'off', 'desactivado');
-
 
     if (isrepeat == "off") {
         musicPlayer.audio.loop = false;
@@ -319,8 +313,6 @@ function getIndexOfSong(songTitle) {
 repeat.addEventListener("click", RepetirSong);
 
 
-
-
 function playRandomSongs(songs) {
     // Verificar si se proporcionó un array de canciones
     let nombre;
@@ -348,14 +340,11 @@ bxshuffle.addEventListener("click", () => {
 });
 
 function ShuffleSong() {
-
-
     isshufle = toggle(isshufle, 'on', 'off');
 
     if (isshufle == "off") {
         bxshuffle.classList.remove("encendido");
         bxshuffle.classList.add("apagado");
-
     }
 
     if (isshufle == "on") {
@@ -370,39 +359,41 @@ function ShuffleSong() {
         repeat.classList.remove("apagado", "encendido");
 
     }
-
 }
 
-musicPlayer.audio.addEventListener("ended", () => {
-    if (isrepeat == "desactivado" && isshufle == "off") {
-        musicPlayer.playNextSong();
-        const audioName = musicPlayer.audio.src.split('/').pop();
-        let pathSong = "music/" + audioName;
-        let index = getIndexOfSong(pathSong);
-        const data = buscarPorIndice(albmunActive, index);
-        pintarDataSong(data);
-        if (isplay == "on") {
-            musicPlayer.resume();
-        } else {
-            musicPlayer.pause();
-        }
-    }
 
-    if (isrepeat == "desactivado" && isshufle == "on") {
-        let songIndex = playRandomSongs(musicPlayer.audioFiles);
-        musicPlayer.playSong(songIndex);
-        const audioName = musicPlayer.audio.src.split('/').pop();
-        let pathSong = "music/" + audioName;
-        let index = getIndexOfSong(pathSong);
-        const data = buscarPorIndice(albmunActive, index);
-        pintarDataSong(data);
-        if (isplay == "on") {
-            musicPlayer.resume();
-        } else {
-            musicPlayer.pause();
+function Repetir() {
+    musicPlayer.audio.addEventListener("ended", () => {
+        if (isrepeat == "desactivado" && isshufle == "off") {
+            musicPlayer.playNextSong();
+            const audioName = musicPlayer.audio.src.split('/').pop();
+            let pathSong = "music/" + audioName;
+            let index = getIndexOfSong(pathSong);
+            const data = buscarPorIndice(albmunActive, index);
+            pintarDataSong(data);
+            if (isplay == "on") {
+                musicPlayer.resume();
+            } else {
+                musicPlayer.pause();
+            }
         }
-    }
-})
+
+        if (isrepeat == "desactivado" && isshufle == "on") {
+            let songIndex = playRandomSongs(musicPlayer.audioFiles);
+            musicPlayer.playSong(songIndex);
+            const audioName = musicPlayer.audio.src.split('/').pop();
+            let pathSong = "music/" + audioName;
+            let index = getIndexOfSong(pathSong);
+            const data = buscarPorIndice(albmunActive, index);
+            pintarDataSong(data);
+            if (isplay == "on") {
+                musicPlayer.resume();
+            } else {
+                musicPlayer.pause();
+            }
+        }
+    });
+}
 
 
 function ActualizarTiem002(musicPlayer) {
@@ -438,56 +429,7 @@ progress.onchange = function () {
 }
 
 
-
-
 let colors = "#23ffed";
-
-// AUDIO CANVAS ANIMATION
-
-
-var canvas, ctx, source, analyser, fbc_array, bars, bar_x, bar_width, bar_height;
-
-function initMP3Player2(musicPlayer) {
-    context3 = null;
-
-
-    context3 = new AudioContext();
-
-    context3.resume().then(() => {
-
-        analyser = context3.createAnalyser();
-        canvas = document.getElementById("analyser_render");
-        ctx = canvas.getContext('2d');
-        source = context3.createMediaElementSource(musicPlayer.audio);
-        source.connect(analyser);
-        analyser.connect(context3.destination);
-        frameLooper();
-
-    });
-
-
-}
-
-
-
-function frameLooper() {
-    window.requestAnimationFrame(frameLooper);
-    fbc_array = new Uint8Array(analyser.frequencyBinCount);
-    analyser.getByteFrequencyData(fbc_array);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = colors;
-
-    bars = 100;
-    for (var i = 0; i < bars; i++) {
-        bar_x = i * 4;
-        bar_width = 2;
-        bar_height = -(fbc_array[i] / 2);
-        ctx.fillRect(bar_x, canvas.height, bar_width, bar_height);
-
-    }
-}
-
-// window.addEventListener("load", initMP3Player, false);
 
 
 // FUNCIONES ADICIONALES -DESCARGAR CANCION
@@ -504,31 +446,34 @@ function DownloadSong() {
     return 1;
 }
 
+
+
+
 downloadSong.addEventListener("click", () => {
-    let descargar = DownloadSong();
-    if (descargar == 1) {
-        AlertSongDownload();
-    }
+    let nameSong = document.querySelector("#nameSong").textContent;
+    Swal.fire({
+        title: "Descargar",
+        text: 'Desea descargar "' + nameSong + '" ?',
+        icon: "question",
+        iconColor: colors,
+        showCancelButton: true,
+        confirmButtonColor: colors,
+        cancelButtonColor: "#ff005d",
+        confirmButtonText: "Si"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            DownloadSong();
+            Swal.fire({
+                title: "Descargando...",
+                text: "Descarga en proceso ❤️",
+                icon: "success",
+                iconColor: colors,
+                confirmButtonColor: colors,
+            });
+        }
+    });
 });
 
-function AlertSongDownload() {
-    const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        iconColor: "#23ffcc",
-        timer: 1000,
-        timerProgressBar: true,
-    });
-
-    Toast.fire({
-        icon: "success",
-        title:
-            "<h5 style='color:var(--color-text);  font-weight: bold;' > Descarga completada</h5>",
-    }).then(function () {
-
-    });
-}
 
 const volume = document.querySelector(".bx-volume-full");
 const volumeSlider = document.querySelector("#volume-slider");
@@ -574,18 +519,7 @@ const enReproduccion = document.querySelector(".enReproduccion");
 
 enReproduccion.addEventListener("click", () => {
     despliegue.classList.toggle("desplegar");
-})
-
-
-
-
-
-
-
-
-
-
-
+});
 
 
 // THEME DATA
@@ -601,7 +535,6 @@ themebtn.addEventListener("click", () => {
 
 function SetTheme() {
     const root = document.documentElement;
-
 
     if (localStorage.getItem("theme") == "light") {
         istheme = "dark";
@@ -654,10 +587,47 @@ $(".bxs-color").on("dragstop.spectrum", function (e, color) {
    `;
     colors = color.toHexString();
 
-    //    $("#meecanta").css("color", color.toHexString());
-    //    ctx.fillStyle = 
 });
 
 
+// INICIO FORMULARIO
 
-// Establecer el contenido CSS
+let avatar = document.querySelectorAll("#avatar");
+let name = "inactivo";
+
+for (avr of avatar) {
+    avr.addEventListener("click", function (e) {
+        removeClassAvatar();
+        name = this.getAttribute("name");
+        let clase = this.getAttribute("class");
+        let rico = document.querySelector("." + clase + "");
+        rico.classList.toggle("imageActive");
+
+    });
+}
+
+function removeClassAvatar() {
+    avatar.forEach(element => {
+        element.classList.remove("imageActive")
+    });
+}
+
+function EnviarForm(name) {
+    const username = document.querySelector("#username").value;
+
+    if (username === null) {
+        alert("Escribir Nombre");
+    }
+    if (username === "") {
+        alert("Escribir Nombre");
+    }
+    if (username && name != "inactivo") {
+        containerInicio.style.display = "none";
+        containerAlbum.style.display = "flex";
+    }
+}
+
+// OBTENIENDO LOS DATOS DEL USUARIO
+document.querySelector("#iniciar").addEventListener("click", () => {
+    EnviarForm(name);
+})

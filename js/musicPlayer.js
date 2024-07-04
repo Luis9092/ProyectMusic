@@ -13,7 +13,6 @@ class MusicPlayer {
         this.audio.controls = true;
         this.progressElement = progressElement;
         this.currentTimeSong = currentTimeSong;
-        // this.audio.duration = audio.duration;
 
         this.audio.addEventListener('timeupdate', () => {
             this.updateProgress();
@@ -21,9 +20,7 @@ class MusicPlayer {
 
     }
 
-
     playNextSong() {
-        this.stop();
         this.currentIndex = (this.currentIndex + 1) % this.audioFiles.length;
         this.playSong(this.currentIndex);
         return this.currentIndex;
@@ -39,7 +36,7 @@ class MusicPlayer {
         this.audio.src = this.audioFiles[index];
         // this.audio.play();
         this.iniciado = 1;
-     
+
     }
 
     pause() {
