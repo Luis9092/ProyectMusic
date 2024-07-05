@@ -39,12 +39,16 @@ function BackSongs() {
 let playindex = 0;
 let isplay = "off";
 let isshufle = "off";
+let id = 0;
+
 
 
 // INICIALIZANDO ALBUM
 const album = new ALbumSong();
 let itemsAlbum = document.querySelectorAll("#containerAlbum .itemAlbum");
 let albmunActive = album.eletronic;
+let NombreAlbumclick = "";
+
 
 
 const currentTimeSong = document.querySelector("#time");
@@ -66,40 +70,43 @@ document.querySelector("#meecanta").addEventListener("click", () => {
     CrearListado(albmunActive, "Electronic", "Electronic");
 });
 
-
 for (btn of itemsAlbum) {
     btn.addEventListener("click", function (e) {
         let valor = this.id;
-        uno = valor;
+        NombreAlbumclick = valor;
         let nombre = "", AlbumLista = "";
 
         containerAlbum.style.display = "none";
         containerSongs.style.display = "flex";
 
-        if (uno == "electronic") {
+        if (NombreAlbumclick == "electronic") {
             AlbumLista = album.eletronic;
             nombre = "Electronic Music";
         }
-        if (uno == "noventas") {
+        if (NombreAlbumclick == "noventas") {
             AlbumLista = album.noventas;
             nombre = "90s Music";
         }
-        if (uno == "Cristianas") {
+        if (NombreAlbumclick == "Cristianas") {
             AlbumLista = album.Cristianas;
             nombre = "Musica Cristiana";
         }
+        main(AlbumLista);
 
-        CrearListado(AlbumLista, nombre, uno);
+        async function main(AlbumLista) {
+            try {
+                await addSongDurations(AlbumLista);
+                CrearListado(AlbumLista, nombre, NombreAlbumclick);
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
     });
+
 }
 
 
-
 function CrearListado(nombreAlbum, nombre, clasificacion) {
-    cadena02 = ` <div class="headlista">
-              <h4>${nombre}</h4>
-              <span>En Reproduccion</span>
-            </div>`;
 
     cadena = ` <div class="header" id="titleheader">
           <i id="backsongs" onclick = "BackSongs()" class="bx bx-arrow-back"></i>
@@ -108,52 +115,121 @@ function CrearListado(nombreAlbum, nombre, clasificacion) {
         </div>`;
     let cuerpo = "";
     nombreAlbum.forEach(element => {
+       
+        let songactive = "";
+        if (element.id == id && nombreAlbum == albmunActive) {
+            songactive = "songActive";
+        }
         cuerpo += `     
-        <div class="itemSong" id="${element.id}" name ="${clasificacion}" >
+        <div class="itemSong ${clasificacion}${element.id} ${songactive}" id="${element.id}" name ="${clasificacion}" >
           <div class="imagedetailA"><img src="${element.image}" /></div>
           <div class="detailitem">
             <div class="detail">
               <span>${element.name}</span> <br />
               <span>${element.autor}</span>
             </div>
-            <div class="timeitem"><span></span></div>
+            <div class="timeitem"><span>${element.duration}</span></div>
           </div>
           <div class="opcionesitem">
             <i class="bx bx-dots-vertical-rounded"></i>
           </div>
         </div>
         `;
-
     });
     cadena += cuerpo;
-    cadena02 += cuerpo;
 
     document.querySelector("#containerSongs .boxcontainer").innerHTML = cadena;
+    ObtenerSongItem();
+}
+
+
+function CreateListActive(nombreAlbum, nombre, clasificacion){
+    cadena02 = ` <div class="headlista">
+              <h4>${nombre}</h4>
+              <span>En Reproduccion</span>
+            </div>`;
+
+    let cuerpo = "";
+    nombreAlbum.forEach(element => {
+       
+        let songactive = "";
+
+        if (element.id == id && nombreAlbum == albmunActive) {
+            songactive = "songActive";
+        }
+
+        cuerpo += `     
+        <div class="itemSong ${clasificacion}${element.id} ${songactive}" id="${element.id}" name ="${clasificacion}" >
+          <div class="imagedetailA"><img src="${element.image}" /></div>
+          <div class="detailitem">
+            <div class="detail">
+              <span>${element.name}</span> <br />
+              <span>${element.autor}</span>
+            </div>
+            <div class="timeitem"><span>${element.duration}</span></div>
+          </div>
+          <div class="opcionesitem">
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </div>
+        </div>
+        `;
+    });
+
+    cadena02 += cuerpo;
     document.querySelector(".cuerpoLista").innerHTML = cadena02;
     ObtenerSongItem();
 }
 
+
+async function addSongDurations(songs) {
+    try {
+        await Promise.all(songs.map(async song => {
+            let duration = await getSongDuration(song.path);
+            let convertir = convertirAminutos(duration);
+            song.duration = convertir;
+        }));
+        return songs;
+    } catch (error) {
+        throw new Error(`Error al procesar las canciones: ${error.message}`);
+    }
+}
+
+function getSongDuration(songPath) {
+    return new Promise((resolve, reject) => {
+        const audioElement = new Audio(songPath);
+        audioElement.onloadedmetadata = () => {
+            resolve(audioElement.duration);
+        };
+        audioElement.onerror = () => {
+            reject(new Error(`Error al procesar la canción ${songPath}`));
+        };
+    });
+}
 function ObtenerSongItem() {
-    let itemsSong = document.querySelectorAll("#containerSongs .itemSong");
+    let itemsSong = document.querySelectorAll(".itemSong");
     for (iterator of itemsSong) {
         iterator.addEventListener("click", function (e) {
-            let id = this.id - 1;
+            id = this.id;
             let name = this.getAttribute("name");
-
+            let nombre = "";
             if (name == "electronic") {
+                nombre = "Electronic Music";
                 albmunActive = album.eletronic;
             }
             if (name == "noventas") {
                 albmunActive = album.noventas;
+                nombre = "90s Music";
             }
 
             if (name == "Cristianas") {
                 albmunActive = album.Cristianas;
+                nombre = "Musica Cristiana";
             }
-
             initMusic(albmunActive, id);
+            CreateListActive(albmunActive, nombre, name);
         });
     }
+
 }
 
 
@@ -167,6 +243,7 @@ function initMusic(albmunActive, id) {
     ActualizarTiem002(musicPlayer);
     initMP3PlayerCanva(musicPlayer);
     Repetir();
+    SongActiveList(id);
 
     if (isplay == "on") {
         musicPlayer.resume();
@@ -177,6 +254,21 @@ function initMusic(albmunActive, id) {
     containerAlbum.style.display = "none";
     containerSongs.style.display = "none";
     containerMusic.style.display = "flex";
+
+
+}
+
+function SongActiveList(clase) {
+    let itemsSong = document.querySelectorAll(".itemSong");
+    itemsSong.forEach(element => {
+        element.classList.remove("songActive");
+    });
+
+    let idBuscar = clase;
+    let miDiv = document.getElementById(idBuscar);
+    let segundaClase = miDiv.classList[1];
+    var songActive = document.querySelector("." + segundaClase + "");
+    songActive.classList.add("songActive")
 }
 
 
@@ -245,14 +337,17 @@ prev.addEventListener("click", () => {
     } else {
         musicPlayer.pause();
     }
+    SongActiveList(index);
+    id = index;
 });
 
 next.addEventListener("click", (e) => {
     e.preventDefault();
-
     const index = musicPlayer.playNextSong();
     const data = buscarPorIndice(albmunActive, index);
     pintarDataSong(data);
+    SongActiveList(index);
+    id = index;
     if (isplay == "on") {
         musicPlayer.resume();
     } else {
@@ -371,6 +466,8 @@ function Repetir() {
             let index = getIndexOfSong(pathSong);
             const data = buscarPorIndice(albmunActive, index);
             pintarDataSong(data);
+            SongActiveList(index);
+            id = index;
             if (isplay == "on") {
                 musicPlayer.resume();
             } else {
@@ -386,6 +483,8 @@ function Repetir() {
             let index = getIndexOfSong(pathSong);
             const data = buscarPorIndice(albmunActive, index);
             pintarDataSong(data);
+            SongActiveList(index);
+            id = index;
             if (isplay == "on") {
                 musicPlayer.resume();
             } else {
@@ -553,14 +652,13 @@ function SetTheme() {
 
 let cambiarColor = document.querySelector(".bxs-color");
 
-
+// spectrum patronus
 $(".bxs-color").spectrum({
     color: "#f00",
     showPalette: false,
     showAlpha: true,
     showButtons: false,
-
-})
+});
 
 var styleElement = document.createElement("style");
 styleElement.rel = "stylesheet";
@@ -612,6 +710,8 @@ function removeClassAvatar() {
     });
 }
 
+containerInicio.style.display = "none";
+containerAlbum.style.display = "flex";
 function EnviarForm(name) {
     const username = document.querySelector("#username").value;
 
