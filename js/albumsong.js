@@ -8,7 +8,7 @@ class ALbumSong {
             id: 0,
             name: "Wonderland",
             autor: "Axel Johansson",
-            path: "music/Hero.mp3",
+            path: "music/Wonderland.mp3",
             image: "images/heroimage.jpg"
         },
         {
