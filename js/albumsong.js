@@ -6,8 +6,8 @@ class ALbumSong {
     eletronic = [
         {
             id: 0,
-            name: "Hero",
-            autor: "Alan Walker",
+            name: "Wonderland",
+            autor: "Axel Johansson",
             path: "music/Hero.mp3",
             image: "images/heroimage.jpg"
         },
@@ -24,6 +24,27 @@ class ALbumSong {
             autor: "Mashup Slow",
             path: "music/demons_jar.mp3",
             image: "images/demonsimage.jpg"
+        },
+        {
+            id: 3,
+            name: "Legends Never Die",
+            autor: "League Of Legends",
+            path: "music/legendsNeverDie.mp3",
+            image: "images/legends.jpg"
+        },
+        {
+            id: 4,
+            name: "Diamond Heart",
+            autor: "Alan Walker",
+            path: "music/DiamondHeart.mp3",
+            image: "images/diamond.jpg"
+        },
+        {
+            id: 5,
+            name: "Asphyxia",
+            autor: "AlexDy",
+            path: "music/asphyxia.mp3",
+            image: "images/aspixia.jpg"
         },
     ];
 
@@ -49,6 +70,20 @@ class ALbumSong {
             path: "music/yourlove.mp3",
             image: "images/gloriaimage.jpg"
         },
+        {
+            id: 3,
+            name: "Have You Ever Seen The Rain",
+            autor: "Creedence Clearwater Reviva",
+            path: "music/rain.mp3",
+            image: "images/rain.jpg"
+        },
+        {
+            id: 4,
+            name: "Total Eclipse Of The Heart",
+            autor: "Bonnie Tyler",
+            path: "music/eclipse.mp3",
+            image: "images/eclipse.jpg"
+        },
     ];
 
     Cristianas = [
@@ -68,9 +103,9 @@ class ALbumSong {
         },
         {
             id: 2,
-            name: "Tal Como soy",
-            autor: "The Outfield",
-            path: "music/Tal_Como_Soy.mp3",
+            name: "Preciosa Sangre",
+            autor: "Cesar Dario",
+            path: "music/PreciosaSangre.mp3",
             image: "images/biblica04.webp"
         },
         {
@@ -78,16 +113,56 @@ class ALbumSong {
             name: "Sinceridad",
             autor: "Rabito",
             path: "music/Sinceridad.mp3",
-            image: "images/biblica05.jpg"
+            image: "images/crist1.jpg"
         },
         {
             id: 4,
             name: "Como Una Flor",
             autor: "Los Hermanos Reyes",
             path: "music/Como_una_Flor.mp3",
-            image: "images/biblica06.jpg"
+            image: "images/crist3.jpg"
         },
     ];
+    
+    rehabilitacion = [
+        {
+            id: 0,
+            name: "Dejaria Todo",
+            autor: "Chayane",
+            path: "music/DejariaTodo.mp3",
+            image: "images/re1.jpg"
+        },
+        {
+            id: 1,
+            name: "Eres Un Sueño",
+            autor: "Los Temerarios",
+            path: "music/EresUnSueno.mp3",
+            image: "images/re2.jpg"
+        },
+        {
+            id: 2,
+            name: "Corazón Mágico",
+            autor: "Los Fugitivos",
+            path: "music/CorazonMagico.mp3",
+            image: "images/re3.jpg"
+        },
+        {
+            id: 3,
+            name: "A Chillar A Otra Parte",
+            autor: "Pesado",
+            path: "music/Chillar.mp3",
+            image: "images/re4.jpg"
+        },
+        {
+            id: 4,
+            name: "Olvidala",
+            autor: "Binomio De Oro De América",
+            path: "music/Olvidala.mp3",
+            image: "images/re5.jpg"
+        },
+    ];
+
+
 
 
 

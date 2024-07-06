@@ -5,13 +5,15 @@
   --container-color: white;
   --hover-color: #e5e5e5;
   --secondary-color: #ff005d;
-  --gray-color: #c0c0c0;
+  --gray-color: #a5a5a5;
   --font-lette1: Arial, Helvetica, "Lucida Sans", "Lucida Sans Regular",
     "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   --border-radiusbtn: 10px;
   --box-shadowbox: -2.2px -2.2px 1px #eaeaea,
     1px 2px 2px rgba(193, 193, 193, 0.426);
-  --text-shadow: 0 2px 2px var(--gray-color);
+  --box-shadowboxActive: -2.2px -2.2px 1px #07ddf5,
+    1px 2px 2px rgba(0, 247, 255, 0.426);
+  --text-shadow: 0 2px 2px #bcbcbc;
 }
 
 :root[data-theme="dark"] {
@@ -21,7 +23,7 @@
   --container-color: #313131;
   --hover-color: #dfdfdf;
   --secondary-color: #ff006f;
-  --gray-color: #bfbfbf;
+  --gray-color: #b0b0b0;
   --font-lette1: Arial, Helvetica, "Lucida Sans", "Lucida Sans Regular",
     "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   --border-radiusbtn: 10px;
@@ -41,11 +43,6 @@
   font-weight: bold;
 }
 
-.songActive {
-  border: 1px solid var(--primary-color) !important;
-  color: var(--primary-color) !important;
-}
-
 .apagado {
   color: var(--color-text);
 }
@@ -55,17 +52,39 @@
   font-weight: 100;
 }
 
-.cerrarModal {
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  font-size: 1rem;
-  font-weight: bold;
-  z-index: 99;
+.swal2-container.swal2-center > .swal2-popup {
+  background-color: var(--container-color);
+}
+
+.swal2-container.swal2-top-end > .swal2-popup,
+.swal2-container.swal2-top-right > .swal2-popup {
+  background-color: var(--container-color);
+}
+
+.swal2-title {
+  color: var(--color-text) !important;
+}
+
+.swal2-html-container {
+  color: var(--color-text);
 }
 
 body {
   height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 0.4rem;
+  background-color: var(--bg-color);  
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 0.2rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
 }
 
 .container {
@@ -101,6 +120,25 @@ body {
   padding: 0.4rem;
   font-size: 1rem;
   color: var(--color-text);
+}
+
+.container .boxcontainer .header .imageProfile {
+  position: relative;
+  display: flex;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background-color: var(--bg-color);
+}
+
+.container .boxcontainer .header .imageProfile img {
+  border-radius: 50%;
+  width: 1.2rem;
+  height: 1.2rem;
+  position: relative;
+  object-fit: cover;
+  cursor: pointer;
+  box-shadow: var(--text-shadow);
 }
 
 h4 {
@@ -145,6 +183,12 @@ h4 {
 
 .activado {
   color: var(--primary-color) !important;
+}
+
+.songActive {
+  border: 1px solid var(--primary-color) !important;
+  color: var(--primary-color) !important;
+  box-shadow: none !important;
 }
 
 .container .boxcontainer .imgfondo {
@@ -217,16 +261,6 @@ input[type="range"]::-webkit-slider-runnable-track {
 input[type="range"]:focus {
   outline: none;
 }
-
-/* input:active,
-textarea:active,
-button:active,
-input:focus-within,
-textarea:focus-within,
-button:focus-within {
-  outline: none !important;
-  border: none !important;
-} */
 
 input[type="range"]::-webkit-slider-thumb {
   height: 0.6rem;
@@ -309,7 +343,8 @@ i {
   align-items: center;
   margin: 0.5rem 0 0.5rem 0;
   padding-right: 10px;
-  box-shadow: var(--box-shadowbox);
+  box-shadow: var(--text-shadow);
+  border: 1px solid var(--bg-color);
   border-radius: 10px;
   cursor: pointer;
 }
@@ -354,17 +389,24 @@ i {
   font-weight: 100;
   color: var(--gray-color);
 }
+.opcionesitem {
+  position: relative;
+  padding: 5px;
+  z-index: 99999;
+  /* background-color: #00d1ca; */
+}
 
 /* EN REPRODUCCION*/
 
 .container .enReproduccion {
-  position: relative;
+  position: static;
   width: 100%;
   padding: 1%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
 }
 
 .container .ListandoReproduccion {
@@ -382,11 +424,12 @@ i {
   left: 0;
   overflow: hidden;
   z-index: 999;
-  /* border-top: 1px solid var(--gray-color); */
 }
 
 .container .ListandoReproduccion.desplegar {
+  border-top: 1px solid var(--bg-color);
   height: 60%;
+  overflow-y: scroll;
 }
 
 .container .ListandoReproduccion .cuerpoLista {

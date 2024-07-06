@@ -12,19 +12,20 @@ const containerAlbum = document.querySelector("#containerAlbum");
 const backalbum = document.querySelector("#backalbum");
 const containerSongs = document.querySelector("#containerSongs");
 const backsongs = document.querySelector("#backsongs");
+// Luis Fernando Paxel Cojolón 06/07/2024
 
 const containerInicio = document.querySelector("#containerInicio");
 
-containerSongs.style.display = "none";
-containerMusic.style.display = "none";
-containerAlbum.style.display = "none";
 
-btAlbum.addEventListener("click", () => {
+btAlbum.addEventListener("click", (e) => {
+    e.preventDefault();
     containerMusic.style.display = "none";
     containerAlbum.style.display = "flex";
+
 });
 
-backalbum.addEventListener("click", () => {
+backalbum.addEventListener("click", (e) => {
+    e.preventDefault();
     containerMusic.style.display = "flex";
     containerAlbum.style.display = "none";
 });
@@ -32,7 +33,6 @@ backalbum.addEventListener("click", () => {
 function BackSongs() {
     containerSongs.style.display = "none";
     containerAlbum.style.display = "flex";
-
 }
 
 
@@ -40,6 +40,10 @@ let playindex = 0;
 let isplay = "off";
 let isshufle = "off";
 let id = 0;
+
+let istheme = "light";
+
+localStorage.setItem("theme", istheme);
 
 
 
@@ -58,52 +62,86 @@ let musicPlayer = new MusicPlayer();
 musicPlayer.inicializarTodo(albmunActive, progress, currentTimeSong);
 
 
-
 window.onload = function (e) {
     context3 = new AudioContext();
     SetTheme();
+    Limpiar();
 
+    let ima = localStorage.getItem("ima");
+    if (!localStorage.getItem("perfil")) {
+        containerMusic.style.display = "none";
+        containerInicio.style.display = "flex";
+    } else {
+        main(albmunActive);
+
+        async function main(AlbumLista) {
+            try {
+                await addSongDurations(AlbumLista);
+                RenderProfile(ima);
+                AlertaUser("success", `Bienvenido ${localStorage.getItem("perfil")}! ¡Que tenga un gran día!`, "#23ffed");
+                containerInicio.style.display = "none";
+                containerAlbum.style.display = "flex";
+                CreateListActive(albmunActive, "Musica Electronica", "electronic");
+                initMusic(albmunActive, 2);
+
+            } catch (error) {
+            }
+        }
+
+
+    }
 }
 
 document.querySelector("#meecanta").addEventListener("click", () => {
     initMusic(albmunActive, 2);
     CrearListado(albmunActive, "Electronic", "Electronic");
+    CreateListActive(albmunActive, "Musica Electronica", "electronic");
 });
 
-for (btn of itemsAlbum) {
-    btn.addEventListener("click", function (e) {
-        let valor = this.id;
-        NombreAlbumclick = valor;
-        let nombre = "", AlbumLista = "";
 
-        containerAlbum.style.display = "none";
-        containerSongs.style.display = "flex";
 
-        if (NombreAlbumclick == "electronic") {
-            AlbumLista = album.eletronic;
-            nombre = "Electronic Music";
-        }
-        if (NombreAlbumclick == "noventas") {
-            AlbumLista = album.noventas;
-            nombre = "90s Music";
-        }
-        if (NombreAlbumclick == "Cristianas") {
-            AlbumLista = album.Cristianas;
-            nombre = "Musica Cristiana";
-        }
-        main(AlbumLista);
+function VerContenidoAlbums() {
 
-        async function main(AlbumLista) {
-            try {
-                await addSongDurations(AlbumLista);
-                CrearListado(AlbumLista, nombre, NombreAlbumclick);
-            } catch (error) {
-                console.log(error.message);
+    for (btn of itemsAlbum) {
+        btn.addEventListener("click", function (e) {
+            document.querySelector("#containerSongs .boxcontainer").innerHTML = "";
+
+            containerAlbum.style.display = "none";
+            containerSongs.style.display = "flex";
+            let valor = this.id;
+            NombreAlbumclick = valor;
+            let nombre = "", AlbumLista = "";
+
+
+            if (NombreAlbumclick == "electronic") {
+                AlbumLista = album.eletronic;
+                nombre = "Música Electrónica";
             }
-        }
-    });
+            if (NombreAlbumclick == "noventas") {
+                AlbumLista = album.noventas;
+                nombre = "90s Música";
+            }
+            if (NombreAlbumclick == "Cristianas") {
+                AlbumLista = album.Cristianas;
+                nombre = "Música Cristiana";
+            }
+            if (NombreAlbumclick == "rehabilitacion") {
+                AlbumLista = album.rehabilitacion;
+                nombre = "Música Rehabilitación";
+            }
+            main(AlbumLista);
 
+            async function main(AlbumLista) {
+                try {
+                    await addSongDurations(AlbumLista);
+                    CrearListado(AlbumLista, nombre, NombreAlbumclick);
+                } catch (error) {
+                }
+            }
+        });
+    }
 }
+
 
 
 function CrearListado(nombreAlbum, nombre, clasificacion) {
@@ -115,14 +153,14 @@ function CrearListado(nombreAlbum, nombre, clasificacion) {
         </div>`;
     let cuerpo = "";
     nombreAlbum.forEach(element => {
-       
+
         let songactive = "";
         if (element.id == id && nombreAlbum == albmunActive) {
             songactive = "songActive";
         }
         cuerpo += `     
         <div class="itemSong ${clasificacion}${element.id} ${songactive}" id="${element.id}" name ="${clasificacion}" >
-          <div class="imagedetailA"><img src="${element.image}" /></div>
+          <div class="imagedetailA"><img loading="lazy" src="${element.image}" /></div>
           <div class="detailitem">
             <div class="detail">
               <span>${element.name}</span> <br />
@@ -130,7 +168,7 @@ function CrearListado(nombreAlbum, nombre, clasificacion) {
             </div>
             <div class="timeitem"><span>${element.duration}</span></div>
           </div>
-          <div class="opcionesitem">
+          <div  class="opcionesitem">
             <i class="bx bx-dots-vertical-rounded"></i>
           </div>
         </div>
@@ -140,10 +178,31 @@ function CrearListado(nombreAlbum, nombre, clasificacion) {
 
     document.querySelector("#containerSongs .boxcontainer").innerHTML = cadena;
     ObtenerSongItem();
+
 }
 
+function Premium() {
+    let pre = document.querySelectorAll(".bx-dots-vertical-rounded");
 
-function CreateListActive(nombreAlbum, nombre, clasificacion){
+    for (iterator of pre) {
+        iterator.addEventListener("click", function () {
+            AlertaUser("info", "Unicamente Para Usuarios Premium", "#dbe600");
+
+        });
+    }
+}
+
+const imageProfile = document.querySelector(".imageProfile");
+
+imageProfile.addEventListener("click", () => {
+    AlertaUser("info", "Unicamente Para Usuarios Premium", "#dbe600");
+
+
+});
+
+
+
+function CreateListActive(nombreAlbum, nombre, clasificacion) {
     cadena02 = ` <div class="headlista">
               <h4>${nombre}</h4>
               <span>En Reproduccion</span>
@@ -151,7 +210,7 @@ function CreateListActive(nombreAlbum, nombre, clasificacion){
 
     let cuerpo = "";
     nombreAlbum.forEach(element => {
-       
+
         let songactive = "";
 
         if (element.id == id && nombreAlbum == albmunActive) {
@@ -159,16 +218,16 @@ function CreateListActive(nombreAlbum, nombre, clasificacion){
         }
 
         cuerpo += `     
-        <div class="itemSong ${clasificacion}${element.id} ${songactive}" id="${element.id}" name ="${clasificacion}" >
-          <div class="imagedetailA"><img src="${element.image}" /></div>
+        <div class="itemSong ${clasificacion}${element.id} ${songactive}" id="${element.id}" name ="${clasificacion}"  >
+          <div class="imagedetailA"><img loading="lazy" src="${element.image}" /></div>
           <div class="detailitem">
             <div class="detail">
               <span>${element.name}</span> <br />
               <span>${element.autor}</span>
             </div>
-            <div class="timeitem"><span>${element.duration}</span></div>
+            <div class="timeitem"> <i class='bx bx-equalizer bx-burst' ></i> <span>${element.duration}</span></div>
           </div>
-          <div class="opcionesitem">
+          <div  class="opcionesitem">
             <i class="bx bx-dots-vertical-rounded"></i>
           </div>
         </div>
@@ -178,6 +237,7 @@ function CreateListActive(nombreAlbum, nombre, clasificacion){
     cadena02 += cuerpo;
     document.querySelector(".cuerpoLista").innerHTML = cadena02;
     ObtenerSongItem();
+    Premium();
 }
 
 
@@ -213,17 +273,21 @@ function ObtenerSongItem() {
             let name = this.getAttribute("name");
             let nombre = "";
             if (name == "electronic") {
-                nombre = "Electronic Music";
+                nombre = "Música Electrónica";
                 albmunActive = album.eletronic;
             }
             if (name == "noventas") {
                 albmunActive = album.noventas;
-                nombre = "90s Music";
+                nombre = "90s Música";
             }
 
             if (name == "Cristianas") {
                 albmunActive = album.Cristianas;
-                nombre = "Musica Cristiana";
+                nombre = "Música Cristiana";
+            }
+            if (name == "rehabilitacion") {
+                albmunActive = album.rehabilitacion;
+                nombre = "Música Rehabilitación";
             }
             initMusic(albmunActive, id);
             CreateListActive(albmunActive, nombre, name);
@@ -412,7 +476,6 @@ function playRandomSongs(songs) {
     // Verificar si se proporcionó un array de canciones
     let nombre;
     if (!Array.isArray(songs) || songs.length === 0) {
-        console.error('Debes proporcionar un array de canciones válido.');
         return;
     }
     function getRandomIndex(array) {
@@ -552,7 +615,7 @@ downloadSong.addEventListener("click", () => {
     let nameSong = document.querySelector("#nameSong").textContent;
     Swal.fire({
         title: "Descargar",
-        text: 'Desea descargar "' + nameSong + '" ?',
+        text: '¿Desea descargar "' + nameSong + '" ?',
         icon: "question",
         iconColor: colors,
         showCancelButton: true,
@@ -624,8 +687,6 @@ enReproduccion.addEventListener("click", () => {
 // THEME DATA
 const body = document.querySelector("body");
 const themebtn = document.querySelector("#theme");
-let istheme = "light";
-localStorage.setItem("theme", istheme);
 
 themebtn.addEventListener("click", () => {
     SetTheme();
@@ -682,6 +743,17 @@ $(".bxs-color").on("dragstop.spectrum", function (e, color) {
     .encendido{
     color: ${color.toHexString()} !important;
     }
+    .songActive {
+  border: 1px solid ${color.toHexString()} !important;
+  color: ${color.toHexString()} !important;
+  box-shadow: none !important;
+ }
+
+ ::-webkit-scrollbar-thumb {
+  background-color: ${color.toHexString()} !important;
+  border-radius: 0.2rem;
+}
+
    `;
     colors = color.toHexString();
 
@@ -710,20 +782,26 @@ function removeClassAvatar() {
     });
 }
 
-containerInicio.style.display = "none";
-containerAlbum.style.display = "flex";
+
 function EnviarForm(name) {
     const username = document.querySelector("#username").value;
 
     if (username === null) {
         alert("Escribir Nombre");
+        AlertaUser("error", "Por favor ingrese un username y elija un avatar.", "#e4004c");
+
     }
     if (username === "") {
-        alert("Escribir Nombre");
+        AlertaUser("error", "Por favor ingrese un username y elija un avatar.", "#e4004c");
+
     }
     if (username && name != "inactivo") {
-        containerInicio.style.display = "none";
         containerAlbum.style.display = "flex";
+        containerInicio.style.display = "none";
+        AlertaUser("success", `Bienvenido ${username}! ¡Que tenga un gran día!`, "#23ffed");
+        RenderProfile(name);
+        localStorage.setItem("ima", name);
+        localStorage.setItem("perfil", username);
     }
 }
 
@@ -731,3 +809,38 @@ function EnviarForm(name) {
 document.querySelector("#iniciar").addEventListener("click", () => {
     EnviarForm(name);
 })
+
+
+function AlertaUser(icon, titulo, color) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        iconColor: color,
+        timer: 3412,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+    Toast.fire({
+        icon: icon,
+        title: titulo
+    });
+}
+
+function RenderProfile(nameImage) {
+    let imageProfile = document.querySelector(".imageProfile");
+    let cadena = `<img loading="lazy" src="images/${nameImage}.png" alt="" />`
+    imageProfile.innerHTML = cadena;
+}
+
+
+
+function Limpiar() {
+    containerAlbum.style.display = "none";
+    containerInicio.style.display = "none";
+    containerMusic.style.display = "none";
+    containerSongs.style.display = "none";
+}

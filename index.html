@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Music</title>
+    <title>MusicGemeni</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="lib/boxicons.min.css" />
     <script src="lib/sweetalert2.min.js"></script>
@@ -28,8 +28,10 @@
     <div class="container" id="containerMusic">
       <div class="boxcontainer">
         <div class="header" id="titleheader">
-          <i id="backmusic" class="bx bx-arrow-back"></i>
-          <h4>Musica Luis</h4>
+          <div class="imageProfile">
+          
+          </div>
+          <h4>Music Gemini</h4>
           <i class="bx bx-menu" id="btAlbum"></i>
         </div>
         <div class="imagecontainer" id="imagecontainer">
@@ -40,15 +42,15 @@
               class="bx bxs-cloud-download encendido"
               title="Descargar mp3"
             ></i>
-            <i class="bx bxs-color encendido" title="Cambiar color"></i>
+            <i class="bx bxs-color encendido" title="Cambiar Color"></i>
             <i
               id="theme"
               class="bx bxs-sun bx-spin encendido"
-              title="Tema color"
+              title="Tema Color"
             ></i>
           </div>
           <div class="imgfondo">
-            <img id="imageSong" src="images/img21.jpg" alt="" />
+            <img id="imageSong" src="images/asifue.png" alt="" />
           </div>
 
           <div class="imagedetail">
@@ -60,7 +62,7 @@
               <i
                 id="meecanta"
                 class="bx bxs-heart-circle bx-flashing encendido"
-                title="Me encanta"
+                title="Me Encanta"
               ></i>
             </div>
           </div>
@@ -109,7 +111,7 @@
         </div>
         <div class="ListandoReproduccion">
           <div class="enReproduccion">
-            <i class="bx bx-chevron-up bx-tada" title="Album"></i>
+            <i class="bx bx-chevron-up bx-tada" title="Álbum"></i>
           </div>
 
           <div class="cuerpoLista"></div>
@@ -129,17 +131,17 @@
       <div class="boxcontainer">
         <div class="header" id="titleheader">
           <i id="backalbum" class="bx bx-arrow-back"></i>
-          <h4>Albums</h4>
+          <h4>Álbums</h4>
           <i class="bx bx-menu" id="btconf"></i>
         </div>
 
-        <div class="itemAlbum" id="electronic">
+        <div onclick="VerContenidoAlbums();" class="itemAlbum" id="electronic">
           <div class="imagedetailA">
             <img src="images/musicEletronic.jpg" />
           </div>
           <div class="detailitem">
             <div class="detail">
-              <span>Electronic Music</span> <br />
+              <span>Musica Electrónica</span> <br />
               <span>Luis List</span>
             </div>
             <div class="timeitem"><span></span></div>
@@ -148,11 +150,11 @@
             <i class="bx bx-dots-vertical-rounded"></i>
           </div>
         </div>
-        <div class="itemAlbum" id="noventas">
+        <div onclick="VerContenidoAlbums();" class="itemAlbum" id="noventas">
           <div class="imagedetailA"><img src="images/music90s.jpg" /></div>
           <div class="detailitem">
             <div class="detail">
-              <span>90s Music</span> <br />
+              <span>90s Música</span> <br />
               <span>Luis List</span>
             </div>
             <div class="timeitem"><span></span></div>
@@ -162,11 +164,25 @@
           </div>
         </div>
 
-        <div class="itemAlbum" id="Cristianas">
+        <div onclick="VerContenidoAlbums();" class="itemAlbum" id="Cristianas">
           <div class="imagedetailA"><img src="images/biblica07.jpg" /></div>
           <div class="detailitem">
             <div class="detail">
-              <span>Musica Cristiana</span> <br />
+              <span>Música Cristiana</span> <br />
+              <span>Luis List</span>
+            </div>
+            <div class="timeitem"><span></span></div>
+          </div>
+          <div class="opcionesitem">
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </div>
+        </div>
+
+        <div onclick="VerContenidoAlbums();" class="itemAlbum" id="rehabilitacion">
+          <div class="imagedetailA"><img src="images/reabilitaAlbum.jpg" /></div>
+          <div class="detailitem">
+            <div class="detail">
+              <span>Música Rehabilitación</span> <br />
               <span>Luis List</span>
             </div>
             <div class="timeitem"><span></span></div>
@@ -186,7 +202,7 @@
         <div class="avatares">
           <h4>Elegir Personaje</h4>
           <div class="Contenedor_Avatares">
-            <div id="avatar" class="uno" name="rico" >
+            <div id="avatar" class="uno" name="rico">
               <img src="images/rico.png" alt="" />
             </div>
             <div id="avatar" class="dos" name="skiper">
@@ -195,7 +211,7 @@
             <div id="avatar" class="tres" name="cabo">
               <img src="images/cabo.png" alt="" />
             </div>
-            <div id="avatar" class="cuatro" name="kovas">
+            <div id="avatar" class="cuatro" name="kowaski">
               <img src="images/kowaski.png" alt="" />
             </div>
           </div>
