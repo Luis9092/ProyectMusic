@@ -72,36 +72,41 @@ window.onload = function (e) {
         containerMusic.style.display = "none";
         containerInicio.style.display = "flex";
     } else {
-        main(albmunActive);
 
-        async function main(AlbumLista) {
-            try {
-                await addSongDurations(AlbumLista);
-                RenderProfile(ima);
-                AlertaUser("success", `Bienvenido ${localStorage.getItem("perfil")}! ¡Que tenga un gran día!`, "#23ffed");
-                containerInicio.style.display = "none";
-                containerAlbum.style.display = "flex";
-                CreateListActive(albmunActive, "Musica Electronica", "electronic");
-                initMusic(albmunActive, 2);
+        RenderProfile(ima);
+        AlertaUser("success", `Bienvenido ${localStorage.getItem("perfil")}! ¡Que tenga un gran día!`, "#23ffed");
+        containerInicio.style.display = "none";
+        containerAlbum.style.display = "flex";
+        CreateListActive(albmunActive, "Musica Electronica", "electronic");
+        initMusic(albmunActive, 2);
 
-            } catch (error) {
-            }
-        }
+        // main(albmunActive);
 
+        // async function main(AlbumLista) {
+        //     try {
+        //         await addSongDurations(AlbumLista);
+        //         RenderProfile(ima);
+        //         AlertaUser("success", `Bienvenido ${localStorage.getItem("perfil")}! ¡Que tenga un gran día!`, "#23ffed");
+        //         containerInicio.style.display = "none";
+        //         containerAlbum.style.display = "flex";
+        //         CreateListActive(albmunActive, "Musica Electronica", "electronic");
+        //         initMusic(albmunActive, 2);
 
+        //     } catch (error) {}
+        // }
     }
 }
 
 document.querySelector("#meecanta").addEventListener("click", () => {
-    initMusic(albmunActive, 2);
-    CrearListado(albmunActive, "Electronic", "Electronic");
-    CreateListActive(albmunActive, "Musica Electronica", "electronic");
+    // initMusic(albmunActive, 2);
+    // CrearListado(albmunActive, "Electronic", "Electronic");
+    // CreateListActive(albmunActive, "Musica Electronica", "electronic");
 });
 
 
+VerContenidoAlbums();
 
 function VerContenidoAlbums() {
-
     for (btn of itemsAlbum) {
         btn.addEventListener("click", function (e) {
             document.querySelector("#containerSongs .boxcontainer").innerHTML = "";
@@ -129,15 +134,17 @@ function VerContenidoAlbums() {
                 AlbumLista = album.rehabilitacion;
                 nombre = "Música Rehabilitación";
             }
-            main(AlbumLista);
+            CrearListado(AlbumLista, nombre, NombreAlbumclick);
 
-            async function main(AlbumLista) {
-                try {
-                    await addSongDurations(AlbumLista);
-                    CrearListado(AlbumLista, nombre, NombreAlbumclick);
-                } catch (error) {
-                }
-            }
+            // main(AlbumLista);
+
+            // async function main(AlbumLista) {
+            //     try {
+            //         await addSongDurations(AlbumLista);
+            //         CrearListado(AlbumLista, nombre, NombreAlbumclick);
+            //     } catch (error) {
+            //     }
+            // }
         });
     }
 }
@@ -145,41 +152,37 @@ function VerContenidoAlbums() {
 
 
 function CrearListado(nombreAlbum, nombre, clasificacion) {
+    let cadena = `
+      <div class="header" id="titleheader">
+        <i id="backsongs" onclick="BackSongs()" class="bx bx-arrow-back"></i>
+        <h4>${nombre}</h4>
+        <i class="bx bx-menu" id="btconf"></i>
+      </div>
+    `;
 
-    cadena = ` <div class="header" id="titleheader">
-          <i id="backsongs" onclick = "BackSongs()" class="bx bx-arrow-back"></i>
-          <h4>${nombre}</h4>
-          <i class="bx bx-menu" id="btconf"></i>
-        </div>`;
-    let cuerpo = "";
-    nombreAlbum.forEach(element => {
-
-        let songactive = "";
-        if (element.id == id && nombreAlbum == albmunActive) {
-            songactive = "songActive";
-        }
-        cuerpo += `     
-        <div class="itemSong ${clasificacion}${element.id} ${songactive}" id="${element.id}" name ="${clasificacion}" >
+    let cuerpo = nombreAlbum.map(element => {
+        let songactive = element.id === id && nombreAlbum === albmunActive ? "songActive" : "";
+        return `
+        <div class="itemSong ${clasificacion}${element.id} ${songactive}" id="${element.id}" name="${clasificacion}">
           <div class="imagedetailA"><img loading="lazy" src="${element.image}" /></div>
           <div class="detailitem">
             <div class="detail">
-              <span>${element.name}</span> <br />
+              <span>${element.name}</span><br />
               <span>${element.autor}</span>
             </div>
             <div class="timeitem"><span>${element.duration}</span></div>
           </div>
-          <div  class="opcionesitem">
+          <div class="opcionesitem">
             <i class="bx bx-dots-vertical-rounded"></i>
           </div>
         </div>
-        `;
-    });
-    cadena += cuerpo;
+      `;
+    }).join('');
 
-    document.querySelector("#containerSongs .boxcontainer").innerHTML = cadena;
-    ObtenerSongItem();
-
+    document.querySelector("#containerSongs .boxcontainer").innerHTML = cadena + cuerpo;
+    // ObtenerSongItem();
 }
+
 
 function Premium() {
     let pre = document.querySelectorAll(".bx-dots-vertical-rounded");
@@ -241,30 +244,31 @@ function CreateListActive(nombreAlbum, nombre, clasificacion) {
 }
 
 
-async function addSongDurations(songs) {
-    try {
-        await Promise.all(songs.map(async song => {
-            let duration = await getSongDuration(song.path);
-            let convertir = convertirAminutos(duration);
-            song.duration = convertir;
-        }));
-        return songs;
-    } catch (error) {
-        throw new Error(`Error al procesar las canciones: ${error.message}`);
-    }
-}
+// async function addSongDurations(songs) {
+//     try {
+//         await Promise.all(songs.map(async song => {
+//             let duration = await getSongDuration(song.path);
+//             let convertir = convertirAminutos(duration);
+//             song.duration = convertir;
+//         }));
+//         return songs;
+//     } catch (error) {
+//         throw new Error(`Error al procesar las canciones: ${error.message}`);
+//     }
+// }
 
-function getSongDuration(songPath) {
-    return new Promise((resolve, reject) => {
-        const audioElement = new Audio(songPath);
-        audioElement.onloadedmetadata = () => {
-            resolve(audioElement.duration);
-        };
-        audioElement.onerror = () => {
-            reject(new Error(`Error al procesar la canción ${songPath}`));
-        };
-    });
-}
+// function getSongDuration(songPath) {
+//     return new Promise((resolve, reject) => {
+//         const audioElement = new Audio(songPath);
+//         audioElement.onloadedmetadata = () => {
+//             resolve(audioElement.duration);
+//         };
+//         audioElement.onerror = () => {
+//             reject(new Error(`Error al procesar la canción ${songPath}`));
+//         };
+//     });
+// }
+
 function ObtenerSongItem() {
     let itemsSong = document.querySelectorAll(".itemSong");
     for (iterator of itemsSong) {
