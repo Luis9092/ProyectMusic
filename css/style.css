@@ -5,7 +5,7 @@
   --container-color: white;
   --hover-color: #e5e5e5;
   --secondary-color: #ff005d;
-  --gray-color: #0f0f0f;
+  --gray-color: #aaaaaa;
   --font-lette1: Arial, Helvetica, "Lucida Sans", "Lucida Sans Regular",
     "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   --border-radiusbtn: 10px;
@@ -387,7 +387,7 @@ i {
 .itemSong .detailitem .detail span:last-child {
   font-size: 0.5rem;
   font-weight: 100;
-  color: var(--gray-color);
+  color: var(--color-text);
 }
 .opcionesitem {
   position: relative;
