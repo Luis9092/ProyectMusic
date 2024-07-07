@@ -5,7 +5,7 @@
   --container-color: white;
   --hover-color: #e5e5e5;
   --secondary-color: #ff005d;
-  --gray-color: #7b7b7b;
+  --gray-color: #474747;
   --font-lette1: Arial, Helvetica, "Lucida Sans", "Lucida Sans Regular",
     "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   --border-radiusbtn: 10px;
@@ -598,7 +598,7 @@ label {
 @media (max-width: 410px) {
   .itemAlbum .detailitem .detail span,
   .itemSong .detailitem .detail span {
-    font-size: 12px !important;
+    font-size: 10px !important;
   }
   .container .boxcontainer {
     width: 100%;
