@@ -75,7 +75,7 @@ body {
 
 ::-webkit-scrollbar {
   width: 0.4rem;
-  background-color: var(--bg-color);  
+  background-color: var(--bg-color);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -379,13 +379,13 @@ i {
 }
 .itemAlbum .detailitem .detail span:nth-child(1),
 .itemSong .detailitem .detail span:nth-child(1) {
-  font-size: 1em;
+  font-size: 0.8rem;
 }
 
 .itemAlbum .detailitem .detail span:last-child,
 .timeitem span,
 .itemSong .detailitem .detail span:last-child {
-  font-size: 0.6em;
+  font-size: 0.5rem;
   font-weight: 100;
   color: var(--gray-color);
 }
@@ -406,7 +406,6 @@ i {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-
 }
 
 .container .ListandoReproduccion {
@@ -583,6 +582,10 @@ label {
 }
 
 @media (max-width: 710px) {
+  .itemAlbum .detailitem .detail span,
+  .itemSong .detailitem .detail span {
+    font-size: 12px;
+  }
   .container .enReproduccion {
     width: 60%;
   }
@@ -593,6 +596,10 @@ label {
 }
 
 @media (max-width: 410px) {
+  .itemAlbum .detailitem .detail span,
+  .itemSong .detailitem .detail span {
+    font-size: 12px !important;
+  }
   .container .boxcontainer {
     width: 100%;
   }

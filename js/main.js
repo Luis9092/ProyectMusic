@@ -15,6 +15,7 @@ const backsongs = document.querySelector("#backsongs");
 // Luis Fernando Paxel Cojolón 06/07/2024
 
 const containerInicio = document.querySelector("#containerInicio");
+const meencanta = document.querySelector("#meecanta");
 
 
 btAlbum.addEventListener("click", (e) => {
@@ -77,30 +78,14 @@ window.onload = function (e) {
         AlertaUser("success", `Bienvenido ${localStorage.getItem("perfil")}! ¡Que tenga un gran día!`, "#23ffed");
         containerInicio.style.display = "none";
         containerAlbum.style.display = "flex";
-        CreateListActive(albmunActive, "Musica Electronica", "electronic");
-        initMusic(albmunActive, 2);
-
-        // main(albmunActive);
-
-        // async function main(AlbumLista) {
-        //     try {
-        //         await addSongDurations(AlbumLista);
-        //         RenderProfile(ima);
-        //         AlertaUser("success", `Bienvenido ${localStorage.getItem("perfil")}! ¡Que tenga un gran día!`, "#23ffed");
-        //         containerInicio.style.display = "none";
-        //         containerAlbum.style.display = "flex";
-        //         CreateListActive(albmunActive, "Musica Electronica", "electronic");
-        //         initMusic(albmunActive, 2);
-
-        //     } catch (error) {}
-        // }
     }
 }
 
-document.querySelector("#meecanta").addEventListener("click", () => {
-    // initMusic(albmunActive, 2);
-    // CrearListado(albmunActive, "Electronic", "Electronic");
-    // CreateListActive(albmunActive, "Musica Electronica", "electronic");
+meencanta.addEventListener("click", (e) => {
+    e.preventDefault();
+    initMusic(albmunActive, 2);
+    CrearListado(albmunActive, "Electronic", "Electronic");
+    CreateListActive(albmunActive, "Musica Electronica", "electronic");
 });
 
 
@@ -134,17 +119,17 @@ function VerContenidoAlbums() {
                 AlbumLista = album.rehabilitacion;
                 nombre = "Música Rehabilitación";
             }
-            CrearListado(AlbumLista, nombre, NombreAlbumclick);
+            // CrearListado(AlbumLista, nombre, NombreAlbumclick);
 
-            // main(AlbumLista);
+            main(AlbumLista);
 
-            // async function main(AlbumLista) {
-            //     try {
-            //         await addSongDurations(AlbumLista);
-            //         CrearListado(AlbumLista, nombre, NombreAlbumclick);
-            //     } catch (error) {
-            //     }
-            // }
+            async function main(AlbumLista) {
+                try {
+                    await addSongDurations(AlbumLista);
+                    CrearListado(AlbumLista, nombre, NombreAlbumclick);
+                } catch (error) {
+                }
+            }
         });
     }
 }
@@ -180,7 +165,7 @@ function CrearListado(nombreAlbum, nombre, clasificacion) {
     }).join('');
 
     document.querySelector("#containerSongs .boxcontainer").innerHTML = cadena + cuerpo;
-    // ObtenerSongItem();
+    ObtenerSongItem();
 }
 
 
@@ -244,30 +229,30 @@ function CreateListActive(nombreAlbum, nombre, clasificacion) {
 }
 
 
-// async function addSongDurations(songs) {
-//     try {
-//         await Promise.all(songs.map(async song => {
-//             let duration = await getSongDuration(song.path);
-//             let convertir = convertirAminutos(duration);
-//             song.duration = convertir;
-//         }));
-//         return songs;
-//     } catch (error) {
-//         throw new Error(`Error al procesar las canciones: ${error.message}`);
-//     }
-// }
+async function addSongDurations(songs) {
+    try {
+        await Promise.all(songs.map(async song => {
+            let duration = await getSongDuration(song.path);
+            let convertir = convertirAminutos(duration);
+            song.duration = convertir;
+        }));
+        return songs;
+    } catch (error) {
+        throw new Error(`Error al procesar las canciones: ${error.message}`);
+    }
+}
 
-// function getSongDuration(songPath) {
-//     return new Promise((resolve, reject) => {
-//         const audioElement = new Audio(songPath);
-//         audioElement.onloadedmetadata = () => {
-//             resolve(audioElement.duration);
-//         };
-//         audioElement.onerror = () => {
-//             reject(new Error(`Error al procesar la canción ${songPath}`));
-//         };
-//     });
-// }
+function getSongDuration(songPath) {
+    return new Promise((resolve, reject) => {
+        const audioElement = new Audio(songPath);
+        audioElement.onloadedmetadata = () => {
+            resolve(audioElement.duration);
+        };
+        audioElement.onerror = () => {
+            reject(new Error(`Error al procesar la canción ${songPath}`));
+        };
+    });
+}
 
 function ObtenerSongItem() {
     let itemsSong = document.querySelectorAll(".itemSong");
@@ -311,7 +296,7 @@ function initMusic(albmunActive, id) {
     ActualizarTiem002(musicPlayer);
     initMP3PlayerCanva(musicPlayer);
     Repetir();
-    SongActiveList(id);
+    // SongActiveList(id);
 
     if (isplay == "on") {
         musicPlayer.resume();
