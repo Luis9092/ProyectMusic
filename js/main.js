@@ -119,10 +119,8 @@ function VerContenidoAlbums() {
                 AlbumLista = album.rehabilitacion;
                 nombre = "Música Rehabilitación";
             }
-            // CrearListado(AlbumLista, nombre, NombreAlbumclick);
 
             main(AlbumLista);
-
             async function main(AlbumLista) {
                 try {
                     await addSongDurations(AlbumLista);
@@ -168,6 +166,33 @@ function CrearListado(nombreAlbum, nombre, clasificacion) {
     ObtenerSongItem();
 }
 
+async function addSongDurations(songs) {
+    try {
+        await Promise.all(songs.map(async song => {
+            let duration = await getSongDuration(song.path);
+            let convertir = convertirAminutos(duration);
+            song.duration = convertir;
+        }));
+        return songs;
+    } catch (error) {
+        throw new Error(`Error al procesar las canciones: ${error.message}`);
+    }
+}
+
+function getSongDuration(songPath) {
+    return new Promise((resolve, reject) => {
+        const audioElement = new Audio(songPath);
+        audioElement.onloadedmetadata = () => {
+            resolve(audioElement.duration);
+        };
+        audioElement.onerror = () => {
+            // reject(new Error(`Error al procesar la canción ${songPath}`));
+        };
+    });
+}
+
+ 
+
 
 function Premium() {
     let pre = document.querySelectorAll(".bx-dots-vertical-rounded");
@@ -184,7 +209,6 @@ const imageProfile = document.querySelector(".imageProfile");
 
 imageProfile.addEventListener("click", () => {
     AlertaUser("info", "Unicamente Para Usuarios Premium", "#dbe600");
-
 
 });
 
@@ -229,30 +253,7 @@ function CreateListActive(nombreAlbum, nombre, clasificacion) {
 }
 
 
-async function addSongDurations(songs) {
-    try {
-        await Promise.all(songs.map(async song => {
-            let duration = await getSongDuration(song.path);
-            let convertir = convertirAminutos(duration);
-            song.duration = convertir;
-        }));
-        return songs;
-    } catch (error) {
-        throw new Error(`Error al procesar las canciones: ${error.message}`);
-    }
-}
 
-function getSongDuration(songPath) {
-    return new Promise((resolve, reject) => {
-        const audioElement = new Audio(songPath);
-        audioElement.onloadedmetadata = () => {
-            resolve(audioElement.duration);
-        };
-        audioElement.onerror = () => {
-            reject(new Error(`Error al procesar la canción ${songPath}`));
-        };
-    });
-}
 
 function ObtenerSongItem() {
     let itemsSong = document.querySelectorAll(".itemSong");
@@ -563,7 +564,6 @@ function convertirAminutos(duracion) {
     const duracionSegundos = duracion;
     const minutos = Math.floor(duracionSegundos / 60);
     const segundos = Math.floor(duracionSegundos % 60);
-
     return `${minutos}:${segundos.toString().padStart(2, '0')}`;
 }
 
